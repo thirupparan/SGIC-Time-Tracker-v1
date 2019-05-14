@@ -16,11 +16,6 @@ admin :user name -thirupparan@gmail.com
       
       Please follow these steps to clone and run these apps (Hope you installed git)
 
-Go to your working directory and open GitBash and follow these commands 
-Front end
-git clone  https://github.com/paki14/testLeaveSystemFrontend.git
-
-
 Steps to create and import database
 1.make sure to have to My SQL database with
       username=root
