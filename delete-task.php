@@ -1,5 +1,5 @@
 <?php  
- $connect = mysqli_connect("localhost", "root", "manager", "sgic-user");  
+ include('database_mysqli_assign_company.php');
  $sql = "DELETE FROM events WHERE id = '".$_POST["id"]."'";  
  if(mysqli_query($connect, $sql))  
  {  

@@ -1,6 +1,6 @@
 <?php  
 session_start();
-$connect = mysqli_connect("localhost", "root", "manager", "sgic-user");  
+include('database_mysqli_assign_company.php');
 
 if($_POST["action"]=='time_in'){
 

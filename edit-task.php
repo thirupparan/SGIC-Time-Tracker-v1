@@ -1,5 +1,5 @@
 <?php  
- $connect = mysqli_connect("localhost", "root", "manager", "sgic-user");  
+include('database_mysqli_assign_company.php');
  $id = $_POST["id"];  
  $text = $_POST["text"];  
  $column_name = $_POST["column_name"];  
