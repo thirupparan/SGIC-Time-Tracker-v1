@@ -19,7 +19,7 @@ if(isset($_POST['btn_action']))
 		$statement = $connect->prepare($query);
 		$statement->execute(
 			array(
-				':user_id'	=>	$_SESSION["user_id"],
+				':user_id'	=>		$_SESSION["user_id"],
 				':project_name'	=>	$_POST["project_name"],
 				':start_date'	=>	$_POST["start_date"],
 				':description'	=>	$_POST["description"],
