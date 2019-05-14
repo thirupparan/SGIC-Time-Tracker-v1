@@ -17,6 +17,7 @@ admin :user name -thirupparan@gmail.com
       Please follow these steps to clone and run these apps (Hope you installed git)
 
 Steps to create and import database
+
 1.make sure to have to My SQL database with
       username=root
       password=manager
