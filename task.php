@@ -7,7 +7,7 @@ if(!isset($_SESSION['type']))
 
 $timein='';
 $timeout='';
-$connect = mysqli_connect("localhost", "root", "manager", "sgic-user");  
+include('database_mysqli_assign_company.php'); 
 $sqltime="SELECT `time_in`,`time_out` FROM `attendance` WHERE `user_id`=".$_SESSION['user_id']." AND `date`='".$_GET['date']."'";
 $result = mysqli_query($connect, $sqltime);
 if(mysqli_num_rows($result) > 0)  
