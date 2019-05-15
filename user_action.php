@@ -71,34 +71,50 @@ if(isset($_POST['btn_action']))
 
 	if($_POST['btn_action'] == 'Edit')
 	{
+	try{
 		if($_POST['user_password'] != '')
 		{
 			$query = "
 			UPDATE user SET 
-				user_name = '".$_POST["user_name"]."', 
-				user_email = '".$_POST["user_email"]."',
-				user_password = '".password_hash($_POST["user_password"], PASSWORD_DEFAULT)."' 
-				WHERE user_id = '".$_POST["user_id"]."'
+			user_name = TRIM(:user_name),
+			user_email =TRIM(:user_email),
+			user_password ='".password_hash(trim($_POST["user_password"]), PASSWORD_DEFAULT)."',
+			user_type =:user_type	
+			WHERE user_id =:user_id
 			";
 		}
 		else
 		{
 			$query = "
 			UPDATE user SET 
-				user_name = '".$_POST["user_name"]."', 
-				user_email = '".$_POST["user_email"]."'
-				WHERE user_id = '".$_POST["user_id"]."'
+			user_name =TRIM(:user_name),
+			user_email =TRIM(:user_email),
+			user_type =:user_type
+			WHERE user_id =:user_id
 			";
 		}
 		$statement = $connect->prepare($query);
-		$statement->execute();
-		$result = $statement->fetchAll();
-		if(isset($result))
+		if($statement->execute(
+			array(
+				':user_name'	=> $_POST["user_name"],
+				':user_email'	=> $_POST["user_email"],
+				':user_type'	=> $_POST["user_type"],
+				':user_id'		=> $_POST["user_id"]
+			)
+		))
 		{
-			echo 'User Details Edited';
+			if($statement->rowCount()>0){
+				echo 'User Details Edited';
+			}else{
+				echo 'error occured please check';
+			}
 		}
+	}catch(PDOException $e)
+	{
+	echo 'Error occured : ' . $e->getMessage();
 	}
-
+}
+		
 	if($_POST['btn_action'] == 'delete')
 	{
 		$status = 'Active';
@@ -106,23 +122,26 @@ if(isset($_POST['btn_action']))
 		{
 			$status = 'Inactive';
 		}
+		try{
 		$query = "
 		UPDATE user 
 		SET user_status = :user_status 
 		WHERE user_id = :user_id
 		";
 		$statement = $connect->prepare($query);
-		$statement->execute(
+		if($statement->execute(
 			array(
 				':user_status'	=>	$status,
 				':user_id'		=>	$_POST["user_id"]
 			)
-		);	
-		$result = $statement->fetchAll();	
-		if(isset($result))
+		))
 		{
 			echo 'User Status change to ' . $status;
-		}
+		}	
+	}catch(PDOException $e)
+	{
+	echo 'Error occured : ' . $e->getMessage();
+	}
 	}
 }
 

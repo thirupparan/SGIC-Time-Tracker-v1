@@ -47,13 +47,18 @@ $filtered_rows = $statement->rowCount();
 foreach($result as $row)
 {
 	$status = '';
+	$statusCheck='';
 	if($row["user_status"] == 'Active')
 	{
 		$status = '<span class="label label-success">Active</span>';
+		$statusCheck='<input type="checkbox" name="delete" checked id="'.$row["user_id"].'" class="delete"  data-status="'.$row["user_status"].'">';
+		$updatebutton='<button type="button" name="update" id="'.$row["user_id"].'" class="btn btn-warning btn-xs update">Update</button>';
 	}
 	else
 	{
 		$status = '<span class="label label-danger">Inactive</span>';
+		$statusCheck='<input type="checkbox" name="delete" id="'.$row["user_id"].'" class="delete"  data-status="'.$row["user_status"].'">';
+		$updatebutton='<button type="button" disabled  name="update" id="'.$row["user_id"].'" class="btn btn-warning btn-xs update">Update</button>';
 	}
 	$sub_array = array();
 	$sub_array[] = $row['user_id'];
@@ -63,8 +68,8 @@ foreach($result as $row)
 	$sub_array[] = $status;
 	
 	
-	$sub_array[] = '<button type="button" name="update" id="'.$row["user_id"].'" class="btn btn-warning btn-xs update">Update</button>';
-	$sub_array[] = '<button type="button" name="delete" id="'.$row["user_id"].'" class="btn btn-danger btn-xs delete" data-status="'.$row["user_status"].'">Delete</button>';
+	$sub_array[] = $updatebutton;
+	$sub_array[] = $statusCheck;
 	$sub_array[] = '<button type="button" name="company" id="'.$row["user_id"].'" class="btn btn-warning btn-xs company">Company</button>';
 	$data[] = $sub_array;
 }

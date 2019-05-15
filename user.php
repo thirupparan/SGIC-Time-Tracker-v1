@@ -9,7 +9,6 @@ include('function.php');
 
 
 ?>
-<span id="alert_action"></span>
 <div class="row">
 	<div class="col-lg-12">
 		<div class="panel panel-default">
@@ -20,7 +19,7 @@ include('function.php');
 					</div>
 					<div class="col-lg-2 col-md-2 col-sm-4 col-xs-6" align="right">
 						<button type="button" name="add" id="add_button" data-toggle="modal" data-target="#userModal"
-							class="btn btn-success btn-xs">Add</button>
+							class="btn btn-primary btn-xs">Add</button>
 					</div>
 				</div>
 
@@ -29,16 +28,17 @@ include('function.php');
 			<div class="panel-body">
 				<div class="row">
 					<div class="col-sm-12 table-responsive">
+					<span id="alert_action"></span>
 						<table id="user_data" class="table table-bordered table-striped">
 							<thead>
 								<tr>
 									<th>ID</th>
 									<th>Email</th>
 									<th>Name</th>
-									<th>Type</th>
+									<th>Role</th>
 									<th>Status</th>
 									<th>Edit</th>
-									<th>Delete</th>
+									<th>Active/Inactive</th>
 									<th>Company</th>
 
 								</tr>
@@ -186,6 +186,9 @@ include('function.php');
 					$('#action_company').val("Add");
 					$('#btn_action_company').val("Add");
 					$('#result').html(data);
+					setTimeout(() => {
+						$('#result').html('');
+					}, 1500);
 				}
 			});
 		}
@@ -290,6 +293,13 @@ include('function.php');
 					"orderable": true
 				}
 			],
+			"fnDrawCallback": function() {
+            jQuery('#user_data .delete').bootstrapToggle({
+				on: 'Active',
+      			off: 'Inactive',
+				  size:'mini'
+			});
+		},
 			"pageLength": 25
 		});
 
@@ -309,6 +319,9 @@ include('function.php');
 					$('#alert_action').fadeIn().html('<div class="alert alert-success">' + data + '</div>');
 					$('#action').attr('disabled', false);
 					userdataTable.ajax.reload();
+					setTimeout(() => {
+						$('#alert_action').html('');
+					}, 1500);
 				}
 			})
 		});
@@ -336,7 +349,7 @@ include('function.php');
 			})
 		});
 
-		$(document).on('click', '.delete', function () {
+		$(document).on('change', '.delete', function () {
 			var user_id = $(this).attr("id");
 			var status = $(this).data('status');
 			var btn_action = "delete";
@@ -348,10 +361,14 @@ include('function.php');
 					success: function (data) {
 						$('#alert_action').fadeIn().html('<div class="alert alert-info">' + data + '</div>');
 						userdataTable.ajax.reload();
+						setTimeout(() => {
+						$('#alert_action').html('');
+					}, 1500);
 					}
 				})
 			}
 			else {
+				userdataTable.ajax.reload();
 				return false;
 			}
 		});
