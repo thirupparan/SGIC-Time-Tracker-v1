@@ -1,6 +1,6 @@
 <?php  
 session_start();
-include('database_mysqli_assign_company.php');
+include('database_mysqli_assign_company.php'); 
 
 if($_POST["action"]=='time_in'){
 

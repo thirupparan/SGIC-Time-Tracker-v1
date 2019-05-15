@@ -9,19 +9,30 @@ if(isset($_POST['btn_action']))
 	{
 		$query = "
 		INSERT INTO user_role (role_name,role_status) 
-		VALUES (:role_name,:role_status)
-		";
+		SELECT * FROM (SELECT :role_name , :role_status)
+		AS tmp
+WHERE NOT EXISTS (
+    SELECT role_name FROM user_role WHERE role_name = :role_name
+) LIMIT 1"
+		;
+
+
 		$statement = $connect->prepare($query);
-		$statement->execute(
+		if($statement->execute(
 			array(
 				':role_name'	=>	$_POST["role_name"],
 				':role_status'	=>	'Active'
 			)
-		);
-		$result = $statement->fetchAll();
-		if(isset($result))
+		))
 		{
-			echo 'Role Name Added';
+			if($statement->rowCount()>0){
+				echo 'Role Name Added';
+			}else if($statement->rowCount()==0){
+				echo 'May be the Role Name already exist ';
+			}else{
+				echo 'error occured please check ';
+			}
+			
 		}
 	}
 	
