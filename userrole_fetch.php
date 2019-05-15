@@ -48,17 +48,19 @@ foreach($result as $row)
 	{
 		$status = '<span class="label label-success">Active</span>';
 		$statusCheck='<input type="checkbox" name="delete" checked id="'.$row["role_id"].'" class="delete"  data-status="'.$row["role_status"].'">';
+		$updatebutton='<button type="button" name="update" id="'.$row["role_id"].'" class="btn btn-warning btn-xs update">Update</button>';
 	}
 	else
 	{
 		$status = '<span class="label label-danger">Inactive</span>';
 		$statusCheck='<input type="checkbox" name="delete" id="'.$row["role_id"].'" class="delete" data-status="'.$row["role_status"].'">';
+		$updatebutton='<button type="button" disabled name="update" id="'.$row["role_id"].'" class="btn btn-warning btn-xs update">Update</button>';
 	}
 	$sub_array = array();
 	$sub_array[] = $row['role_id'];
 	$sub_array[] = $row['role_name'];
 	$sub_array[] = $status;
-	$sub_array[] = '<button type="button" name="update" id="'.$row["role_id"].'" class="btn btn-warning btn-xs update">Update</button>';
+	$sub_array[] = $updatebutton;
 	$sub_array[] = $statusCheck;
 	$data[] = $sub_array;
 }
