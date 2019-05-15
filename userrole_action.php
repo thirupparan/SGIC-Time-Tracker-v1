@@ -55,23 +55,33 @@ WHERE NOT EXISTS (
 
 	if($_POST['btn_action'] == 'Edit')
 	{
+		try{
 		$query = "
-		UPDATE user_role set role_name = :role_name  
-		WHERE role_id = :role_id
-		";
+		UPDATE user_role set role_name = TRIM(:role_name)  
+		WHERE role_id = :role_id";
 		$statement = $connect->prepare($query);
-		$statement->execute(
+		if($statement->execute(
 			array(
 				':role_name'	=>	$_POST["role_name"],
 				':role_id'		=>	$_POST["role_id"]
 			)
-		);
-		$result = $statement->fetchAll();
-		if(isset($result))
+		))
+		
 		{
-			echo 'Role Name Edited';
+			if($statement->rowCount()>0){
+				echo 'Role Name Edited';
+			}else{
+				echo 'error occured please check';
+			}
+			
+		}
+	}catch(PDOException $e)
+		{
+		echo 'Error occured : ' . $e->getMessage();
 		}
 	}
+
+
 	if($_POST['btn_action'] == 'delete')
 	{
 		$status = 'Active';
@@ -79,23 +89,27 @@ WHERE NOT EXISTS (
 		{
 			$status = 'Inactive';	
 		}
+	try{
 		$query = "
 		UPDATE user_role 
 		SET role_status = :role_status 
 		WHERE role_id = :role_id
 		";
 		$statement = $connect->prepare($query);
-		$statement->execute(
+		if($statement->execute(
 			array(
 				':role_status'	=>	$status,
 				':role_id'		=>	$_POST["role_id"]
 			)
-		);
-		$result = $statement->fetchAll();
-		if(isset($result))
+		))
+		
 		{
 			echo 'Role status change to ' . $status;
 		}
+	}catch(PDOException $e)
+	{
+	echo 'Error occured : ' . $e->getMessage();
+	}
 	}
 }
 

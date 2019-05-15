@@ -11,7 +11,7 @@
                 </button>
             </nav>
 
-            <input type="text" class="hidden-sm hidden-xs" id="header-search-field" placeholder="search for something">
+            <!-- <input type="text" class="hidden-sm hidden-xs" id="header-search-field" placeholder="search for something"> -->
         </div>
         <div class="col-md-7">
             <ul class="pull-right">
