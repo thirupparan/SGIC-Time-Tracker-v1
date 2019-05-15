@@ -2,16 +2,12 @@
 //category.php
 include('./fragments/header.php');
 include('database_config_dashboard.php');
-if($_SESSION['type'] != '1')
+if(!isset($_SESSION['type']))
 {
 	header("location:login.php");
 }
-
-
-
 ?>
-
-	<span id="alert_action"></span>
+	
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="panel panel-default">
@@ -31,13 +27,14 @@ if($_SESSION['type'] != '1')
                 <div class="panel-body">
                     <div class="row">
                     	<div class="col-sm-12 table-responsive">
+						<span id="alert_action"></span>
                     		<table id="role_data" class="table table-bordered table-striped">
                     			<thead><tr>
 									<th>ID</th>
 									<th>User role</th>
 									<th>Status</th>
 									<th>Edit</th>
-									<th>Delete</th>
+									<th>Active/Inactive</th>
 								</tr></thead>
                     		</table>
                     	</div>
@@ -87,7 +84,6 @@ $(document).ready(function(){
 		event.preventDefault();
 		$('#action').attr('disabled','disabled');
 		var form_data = $(this).serialize();
-		console.log(form_data);
 		$.ajax({
 			url:"userrole_action.php",
 			method:"POST",
@@ -99,6 +95,9 @@ $(document).ready(function(){
 				$('#alert_action').fadeIn().html('<div class="alert alert-success">'+data+'</div>');
 				$('#action').attr('disabled', false);
 				roledataTable.ajax.reload();
+				setTimeout(() => {
+						$('#alert_action').html('');
+					}, 1500);
 			}
 		})
 	});
@@ -136,10 +135,18 @@ $(document).ready(function(){
 				"targets":[3, 4],
 				"orderable":false,
 			},
-		],
+		]
+		,
+		"fnDrawCallback": function() {
+            jQuery('#role_data .delete').bootstrapToggle({
+				on: 'Active',
+      			off: 'Inactive',
+				  size:'mini'
+			});
+		},
 		"pageLength": 25
 	});
-	$(document).on('click', '.delete', function(){
+	$(document).on('change', '.delete', function(){
 		var role_id = $(this).attr('id');
 		var status = $(this).data("status");
 		var btn_action = 'delete';
@@ -153,14 +160,20 @@ $(document).ready(function(){
 				{
 					$('#alert_action').fadeIn().html('<div class="alert alert-info">'+data+'</div>');
 					roledataTable.ajax.reload();
+					setTimeout(() => {
+						$('#alert_action').html('');
+					}, 1500);
 				}
 			})
 		}
 		else
 		{
+			roledataTable.ajax.reload();
 			return false;
 		}
 	});
+
+	
 });
 </script>
 

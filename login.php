@@ -10,6 +10,9 @@ $message = '';
 
 if(isset($_POST["login"]))
 {
+  if($_POST["user_email"]==null || $_POST["user_password"]==null){
+    $message = "<div class='alert alert-warning' role='alert'> Fields cannot be empty </div>";
+  }else{
 	$query = "
 	SELECT * FROM USER 
 		WHERE user_email = :user_email
@@ -52,8 +55,10 @@ if(isset($_POST["login"]))
 	}
 	else
 	{
-		$message = $message = "<div class='alert alert-warning' role='alert'> Wrong email Address </div>";
-	}
+		$message ="<div class='alert alert-warning' role='alert'> Wrong email Address </div>";
+  }
+}
+
 }
 
 
