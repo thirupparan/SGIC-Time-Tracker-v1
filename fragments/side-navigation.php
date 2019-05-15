@@ -1,5 +1,5 @@
 <div class="col-md-2 col-sm-2 hidden-xs display-table-cell valign-top" id="side-menu">
-    <h1 class="hidden-sm hidden-xs">Navigation</h1>
+  
 
     <div class="text-center">
         <?php 
