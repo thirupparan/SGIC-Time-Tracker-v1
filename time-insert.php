@@ -13,9 +13,8 @@ WHERE NOT EXISTS (
 
 execute_query($connect,$sql);
 
-
-
 }else if($_POST["action"]=='time_out'){
+    
 $sql="UPDATE attendance SET time_out = '".$_POST["timeout"]."' WHERE attendance.user_id='".$_SESSION["user_id"]."' AND attendance.date = '".$_POST["date"]."'";
 
 execute_query($connect,$sql);

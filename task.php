@@ -31,12 +31,13 @@ $timeout=$row['time_out'] !=null ? $row['time_out']:'';
 
                             <div class="col-md-4">
                             <form id="formTimeIn">
-                                <div class="form-group">
+                                <div class="form-group text-center">
                                     <label class="sr-only">Time In</label>
                                     <label>Time In</label>
                                     <input type="time" class="form-control" id="timeIn" value="<?php echo $timein; ?>" name="timeIn" placeholder="hh:mm:ss">
                                     <input type="hidden" name="action" value="time_in"/>
-                                    <input type="submit" id="title" value="I'm in">
+                                    <br/>
+                                    <input type="submit" id="btntimeIn" class="btn btn-primary"  value="I'm in">
                                 </div>
                                 </form>
                             </div>
@@ -45,19 +46,21 @@ $timeout=$row['time_out'] !=null ? $row['time_out']:'';
 
                             <div class="col-md-4">
                             <form id="formTimeOut">
-                                    <div class="form-group">
+                                    <div class="form-group text-center">
                                         <label class="sr-only">Time Out</label>
                                         <label>Time out</label>
                                         <input type="time" class="form-control" id="timeOut" value="<?php echo $timeout; ?>" name="timeOut" placeholder="hh:mm:ss">
                                         <input type="hidden" name="action" value="time_out"/>
-                                        <input type="submit" id="title1" value="I'm out">
+                                        <br/>
+                                        <input type="submit" id="btntimeOut" class="btn btn-primary" value="I'm out">
                                     </div>
                                     </form>
                                 </div>
 
                                 <div class="col-md-4 text-center">
+                                   <h4><?php echo $_GET['date'];?></h4>
                                    <h3>Working Hours</h3>
-                                   <h4>7hrs 56 min</h4>
+                                   <h4>-hrs --mins</h4>
                                    </div>
 
                         </div>
@@ -82,6 +85,13 @@ $timeout=$row['time_out'] !=null ? $row['time_out']:'';
 
 <script>
      $(document).ready(function () {
+          if(isNaN($('#timeIn').val())){
+               
+               $("#btntimeOut").attr("disabled", false);
+          }else{
+               
+               $("#btntimeOut").attr("disabled", true);
+          }
           var hdate = $('#hiddendate').val();
 
 

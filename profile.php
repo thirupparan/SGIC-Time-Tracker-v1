@@ -84,12 +84,11 @@ foreach($result as $row)
 
 						<div class="form-group">
 							<label>Address</label>
-							<textarea name="address" id="address" class="form-control" rows="3" cols="3" required>
+							<textarea name="address" id="address" class="form-control" rows="3" cols="3" style="resize:none;" required>
 								<?php echo $address; ?>
 							</textarea>
 
 						</div>
-
 
 						<div class="form-group">
 							<input type="hidden" name="action" value="edit_profile" />

@@ -35,7 +35,7 @@ $sqlsum="SELECT SUM(duration) as total FROM events INNER JOIN project ON project
 
 function print_duration($timeMins){
      $time_unit="";
-     for($i=30;$i<=480;$i=$i+30){
+     for($i=30;$i<=120;$i=$i+30){
           $hr=floor($i/60) ==0 ? '':floor($i/60)."hr";
           $min=$i%60 == 0 ? '':($i%60)."min";
           if($i==$timeMins){
@@ -59,7 +59,7 @@ function print_duration($timeMins){
                      <th width="25%">Task Name</th>  
                      <th width="10%">Duration</th>
                      <th width="30%">Description</th>  
-                     <th width="10%">Delete</th>  
+                     <th width="10%"></th>  
                 </tr>';  
  if(mysqli_num_rows($result) > 0)  
  {  
