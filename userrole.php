@@ -116,7 +116,7 @@ $(document).ready(function(){
 				$('#role_name').val(data.role_name);
 				$('.modal-title').html("<i class='fa fa-pencil-square-o'></i> Edit Category");
 				$('#role_id').val(role_id);
-				$('#action').val('Edit');
+				$('#action').val('Update');
 				$('#btn_action').val("Edit");
 			}
 		})

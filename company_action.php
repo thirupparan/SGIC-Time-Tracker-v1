@@ -7,12 +7,13 @@ if(isset($_POST['btn_action']))
 {
 	if($_POST['btn_action'] == 'Add')
 	{
+		try{
 		$query = "
 		INSERT INTO out_source_company (company_name,contact_number,email,address,company_status) 
-		VALUES (:company_name,:contact_number,:email,:address,:company_status)
+		VALUES (TRIM(:company_name),TRIM(:contact_number),TRIM(:email),TRIM(:address),:company_status)
 		";
 		$statement = $connect->prepare($query);
-		$statement->execute(
+		if($statement->execute(
 			array(
 				':company_name'	=>	$_POST["company_name"],
 				':contact_number'	=>	$_POST["contact_number"],
@@ -20,14 +21,20 @@ if(isset($_POST['btn_action']))
 				':address'	=>	$_POST["address"],
 				':company_status'	=>	'Active'
 			)
-		);
-		$result = $statement->fetchAll();
-		if(isset($result))
-		{
-			echo 'Company Details Added';
-		
+		)){
+			if($statement->rowCount()>0){
+				echo 'Company Details Added';
+			}else{
+			echo 'error occured please check';
+			}
 		}
+		}catch(PDOException $e)
+		{
+	echo 'Error occured : ' . $e->getMessage();
 	}
+		
+	}
+	
 	
 	if($_POST['btn_action'] == 'fetch_single')
 	{
@@ -52,25 +59,37 @@ if(isset($_POST['btn_action']))
 
 	if($_POST['btn_action'] == 'Edit')
 	{
+		try{
 		$query = "
-		UPDATE out_source_company set company_name = :company_name,contact_number =:contact_number,email =:email,address=:address
+		UPDATE out_source_company set 
+		company_name = TRIM(:company_name),
+		contact_number =TRIM(:contact_number),
+		email =TRIM(:email),
+		address=TRIM(:address)
 		WHERE company_id = :company_id
 		";
 		$statement = $connect->prepare($query);
-		$statement->execute(
+		if($statement->execute(
 			array(
 				':company_id'		=>	$_POST["company_id"],
-				':company_name'	=>	$_POST["company_name"],
-				':contact_number'		=>	$_POST["contact_number"],
-				':email'		=>	$_POST["email"],
-				':address'		=>	$_POST["address"]
+				':company_name'		=>	$_POST["company_name"],
+				':contact_number'	=>	$_POST["contact_number"],
+				':email'			=>	$_POST["email"],
+				':address'			=>	$_POST["address"]
 			)
-		);
-		$result = $statement->fetchAll();
-		if(isset($result))
-		{
-			echo 'Company Details Edited';
+		)){
+			if($statement->rowCount()>0){
+				echo 'Company Details Edited';
+			}else if($statement->rowCount()==0){
+				echo 'No changes had done on Company';
+			}else{
+				echo 'Error occured';
+			}
 		}
+	}catch(PDOException $e)
+	{
+	echo 'Error occured : ' . $e->getMessage();
+	}
 	}
 	if($_POST['btn_action'] == 'delete')
 	{
@@ -79,23 +98,26 @@ if(isset($_POST['btn_action']))
 		{
 			$status = 'Inactive';	
 		}
+		try{
 		$query = "
 		UPDATE out_source_company 
 		SET company_status = :company_status 
 		WHERE company_id = :company_id
 		";
 		$statement = $connect->prepare($query);
-		$statement->execute(
+		if($statement->execute(
 			array(
 				':company_status'	=>	$status,
 				':company_id'		=>	$_POST["company_id"]
 			)
-		);
-		$result = $statement->fetchAll();
-		if(isset($result))
+		))
 		{
 			echo 'Company status change to ' . $status;
 		}
+	}catch(PDOException $e)
+	{
+	echo 'Error occured : ' . $e->getMessage();
+	}
 	}
 }
 

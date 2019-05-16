@@ -18,7 +18,7 @@ function fill_user_role_list($connect)
 function fill_company_list($connect)
 {
 	$query = "
-	SELECT company_name,company_id FROM out_source_company ";
+	SELECT company_name,company_id FROM out_source_company WHERE company_status ='Active'";
 	$statement = $connect->prepare($query);
 	$statement->execute();
 	$result = $statement->fetchAll();

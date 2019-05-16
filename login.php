@@ -11,7 +11,7 @@ $message = '';
 if(isset($_POST["login"]))
 {
   if($_POST["user_email"]==null || $_POST["user_password"]==null){
-    $message = "<div class='alert alert-warning' role='alert'> Fields cannot be empty </div>";
+    $message = "<div class='alert alert-warning' role='alert'> Email address/Password cannot be empty </div>";
   }else{
 	$query = "
 	SELECT * FROM USER 
