@@ -9,12 +9,13 @@ if(isset($_POST['btn_action']))
 {
 	if($_POST['btn_action'] == 'Add')
 	{
+		try{
 		$query = "
 		INSERT INTO user (user_email, user_password, user_name, user_type, user_status) 
 		VALUES (:user_email, :user_password, :user_name, :user_type, :user_status)
 		";	
 		$statement = $connect->prepare($query);
-		$statement->execute(
+		if($statement->execute(
 			array(
 				':user_email'		=>	$_POST["user_email"],
 				':user_password'	=>	password_hash($_POST["user_password"], PASSWORD_DEFAULT),
@@ -22,7 +23,10 @@ if(isset($_POST['btn_action']))
 				':user_type'		=>	$_POST["user_type"],
 				':user_status'		=>	'Active'
 			)
-		);
+		))
+		{
+			if($statement->rowCount()>0){
+
 		//echo $query;
 		if($connect->lastInsertId()>0){
 		$query = "
@@ -45,7 +49,15 @@ if(isset($_POST['btn_action']))
 		{
 			echo 'New User Added ';
 		}
-	}
+	}else if($statement->rowCount()==0)
+{
+	echo 'May be the User Name  OR  Email already exist ';
+}
+}
+}
+		}catch(PDOException $e){
+			echo 'error occured please check ' .$e->getMessage();
+		}
 	}
 
 	if($_POST['btn_action'] == 'fetch_single')
@@ -105,8 +117,10 @@ if(isset($_POST['btn_action']))
 		{
 			if($statement->rowCount()>0){
 				echo 'User Details Edited';
+			}}else if($statement->rowCount()==0){
+				echo 'No changes had done on User Details';
 			}else{
-				echo 'error occured please check';
+				echo 'Error occured';
 			}
 		}
 	}catch(PDOException $e)

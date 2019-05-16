@@ -43,13 +43,18 @@ $filtered_rows = $statement->rowCount();
 foreach($result as $row)
 {
 	$status = '';
+	$statusCheck='';
 	if($row['company_status'] == 'Active')
 	{
 		$status = '<span class="label label-success">Active</span>';
+		$statusCheck ='<input type="checkbox" name="delete" checked id="'.$row["company_id"].'" class="delete"  data-status="'.$row["company_status"].'">';
+		$updatebutton='<button type="button" name="update" id="'.$row["company_id"].'" class="btn btn-warning btn-xs update">EDit</button>';
 	}
 	else
 	{
 		$status = '<span class="label label-danger">Inactive</span>';
+		$statusCheck ='<input type="checkbox" name="delete"  id="'.$row["company_id"].'" class="delete"  data-status="'.$row["company_status"].'">';
+		$updatebutton='<button type="button" name="update" disabled id="'.$row["company_id"].'" class="btn btn-warning btn-xs update">Edit</button>';
 	}
 	$sub_array = array();
 	$sub_array[] = $row['company_id'];
@@ -58,8 +63,8 @@ foreach($result as $row)
 	$sub_array[] = $row['email'];
 	$sub_array[] = $row['address'];
 	$sub_array[] = $status;
-	$sub_array[] = '<button type="button" name="update" id="'.$row["company_id"].'" class="btn btn-warning btn-xs update">Update</button>';
-	$sub_array[] = '<button type="button" name="delete" id="'.$row["company_id"].'" class="btn btn-danger btn-xs delete" data-status="'.$row["company_status"].'">Delete</button>';
+	$sub_array[] = $updatebutton;
+	$sub_array[] = $statusCheck;
 	$data[] = $sub_array;
 }
 

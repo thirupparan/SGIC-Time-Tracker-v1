@@ -52,13 +52,13 @@ foreach($result as $row)
 	{
 		$status = '<span class="label label-success">Active</span>';
 		$statusCheck='<input type="checkbox" name="delete" checked id="'.$row["user_id"].'" class="delete"  data-status="'.$row["user_status"].'">';
-		$updatebutton='<button type="button" name="update" id="'.$row["user_id"].'" class="btn btn-warning btn-xs update">Update</button>';
+		$updatebutton='<button type="button" name="update" id="'.$row["user_id"].'" class="btn btn-warning btn-xs update">Edit</button>';
 	}
 	else
 	{
 		$status = '<span class="label label-danger">Inactive</span>';
 		$statusCheck='<input type="checkbox" name="delete" id="'.$row["user_id"].'" class="delete"  data-status="'.$row["user_status"].'">';
-		$updatebutton='<button type="button" disabled  name="update" id="'.$row["user_id"].'" class="btn btn-warning btn-xs update">Update</button>';
+		$updatebutton='<button type="button" disabled  name="update" id="'.$row["user_id"].'" class="btn btn-warning btn-xs update">Edit</button>';
 	}
 	$sub_array = array();
 	$sub_array[] = $row['user_id'];

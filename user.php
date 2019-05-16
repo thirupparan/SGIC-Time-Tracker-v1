@@ -48,16 +48,17 @@ include('function.php');
 				</div>
 			</div>
 		</div>
+
 	</div>
 </div>
 
 <div id="companyModal" class="modal fade">
-	<div class="modal-dialog">
-
+	<div class="modal-dialog modal-lg">
+	
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title"><i class="fa fa-plus"></i> Manage Recruitment</h4>
+				<h4 class="modal-title">Manage Recruitment</h4>
 			</div>
 			<div class="modal-body">
 
@@ -109,8 +110,10 @@ include('function.php');
 						<span id="alert_company_action"></span>
 					</div>
 				</div>
+
 				<div id="result">
 				</div>
+
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -142,7 +145,7 @@ include('function.php');
 					</div>
 
 					<div class="form-group">
-						<label>Select User Type</label>
+						<label>Select User Role</label>
 						<select name="user_type" id="user_type" class="form-control" required>
 							<option value="">Select User Type</option>
 							<?php echo fill_user_role_list($connect); ?>
@@ -180,15 +183,14 @@ include('function.php');
 				success: function (data) {
 					$('#recruited_date').val('');
 					$('#company_name').val('');
+					$('#companyModal .modal-title').html('Manage Recruitment');
 					$('#work_role').val('');
 					$('#Contract_Period').val('');
 					$('#user_id_company').val(userid);
 					$('#action_company').val("Add");
 					$('#btn_action_company').val("Add");
 					$('#result').html(data);
-					setTimeout(() => {
-						$('#result').html('');
-					}, 1500);
+				
 				}
 			});
 		}
@@ -262,14 +264,16 @@ include('function.php');
 				return false;
 			}
 		});
-	});
 
-
-	$(document).on('click', '.company', function () {
+		$(document).on('click', '.company', function () {
 			var id = $(this).attr("id");
 			$('#companyModal').modal('show');
 		});
 
+	});
+
+
+	
 	$(document).ready(function () {
 		$('#add_button').click(function () {
 			$('#user_form')[0].reset();
@@ -341,7 +345,7 @@ include('function.php');
 					$('#user_form .modal-title').html("<i class='fa fa-pencil-square-o'></i> Edit User");
 					$('#user_id').val(user_id);
 					$("#user_type").val(data.user_type);
-					$('#action').val('Edit');
+					$('#action').val('Update');
 					$('#btn_action').val('Edit');
 					$('#user_password').attr('required', false);
 

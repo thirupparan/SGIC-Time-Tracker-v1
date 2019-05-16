@@ -23,13 +23,13 @@
                      <table class="table table-bordered">  
                           <tr> 
                                    
-									<th width="35%">Company Name</th>
-									<th width="35%">Recruited Date</th>
-                                             <th width="35%">Working Status</th>
-                                             <th width="35%">Work Role</th>
-                                             <th width="35%">contact Period</th>
-                                             <th width="15%">Update</th> 
-									<th width="15%">Delete</th> 
+									<th>Company Name</th>
+									<th>Recruited Date</th>
+                                             <th>Work Role</th>
+                                             <th>contact Period</th>
+                                             <th>Working Status</th>
+                                             <th>Action</th> 
+									
                                 
                           </tr>  
                 ';  
@@ -41,11 +41,12 @@
                                <tr>  
                                     <td>'.$row["company_name"].'</td>  
                                     <td>'.$row["recruited_date"].'</td> 
-                                    <td>'.$row["working_status"].'</td>
                                     <td>'.$row["work_role"].'</td>
                                     <td>'.$row["contract_period"].'</td>
-                                    <td><button type="button" name="update_company" id="'.$row["user_company_id"].'" class="update_company btn btn-success btn-xs">Update</button></td> 
-                                    <td><button type="button" name="delete_company" id="'.$row["user_company_id"].'" class="delete_company btn btn-danger btn-xs">Delete</button></td>  
+                                    <td>'.$row["working_status"].'</td>
+                                    <td>
+                                    <span><button type="button" name="update_company" id="'.$row["user_company_id"].'" class="update_company btn btn-success btn-xs">U</button></span>
+                                    <button type="button" name="delete_company" id="'.$row["user_company_id"].'" class="delete_company btn btn-danger btn-xs">D</button></td>  
                                </tr>  
                           ';  
                      }  

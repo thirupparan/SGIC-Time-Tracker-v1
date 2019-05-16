@@ -8,8 +8,6 @@ if(!isset($_SESSION["type"])){
 
 
 ?>
-
-<span id="alert_action"></span>
 <div class="row">
 	<div class="col-lg-12">
 		<div class="panel panel-default">
@@ -30,6 +28,7 @@ if(!isset($_SESSION["type"])){
 			<div class="panel-body">
 				<div class="row">
 					<div class="col-sm-12 table-responsive">
+					<span id="alert_action"></span>
 						<table id="company_data" class="table table-bordered table-striped">
 							<thead>
 							<tr>
@@ -39,8 +38,8 @@ if(!isset($_SESSION["type"])){
 									<th>Email</th>
 									<th>Address</th>
 									<th>Status</th>
-									<th>Update</th>
-									<th>Delete</th>
+									<th>Edit</th>
+									<th>Active/Inactive</th>
 								</tr>
 							</thead>
 						</table>
@@ -68,7 +67,7 @@ if(!isset($_SESSION["type"])){
 
 					<div class="form-group">
 						<label>Enter Contact Number</label>
-						<input type="text" name="contact_number" id="contact_number" class="form-control" required />
+						<input type="number" name="contact_number" id="contact_number" class="form-control" required />
 					</div>
 
 					<div class="form-group">
@@ -120,6 +119,9 @@ if(!isset($_SESSION["type"])){
 					$('#alert_action').fadeIn().html('<div class="alert alert-success">' + data + '</div>');
 					$('#action').attr('disabled', false);
 					companydataTable.ajax.reload();
+					setTimeout(() => {
+						$('#alert_action').html('');
+					}, 1500);
 				}
 			})
 		});
@@ -140,7 +142,7 @@ if(!isset($_SESSION["type"])){
 					$('#address').val(data.address);
 					$('.modal-title').html("<i class='fa fa-pencil-square-o'></i> Edit Company details");
 					$('#company_id').val(company_id);
-					$('#action').val('Edit');
+					$('#action').val('Update');
 					$('#btn_action').val("Edit");
 				}
 			})
@@ -161,9 +163,16 @@ if(!isset($_SESSION["type"])){
 					"orderable": false,
 				},
 			],
+			"fnDrawCallback": function() {
+            jQuery('#company_data .delete').bootstrapToggle({
+				on: 'Active',
+      			off: 'Inactive',
+				  size:'mini'
+			});
+		},
 			"pageLength": 25
 		});
-		$(document).on('click', '.delete', function () {
+		$(document).on('change', '.delete', function () {
 			var company_id = $(this).attr('id');
 			var status = $(this).data("status");
 			var btn_action = 'delete';
@@ -175,10 +184,14 @@ if(!isset($_SESSION["type"])){
 					success: function (data) {
 						$('#alert_action').fadeIn().html('<div class="alert alert-info">' + data + '</div>');
 						companydataTable.ajax.reload();
+						setTimeout(() => {
+						$('#alert_action').html('');
+					}, 1500);
 					}
 				})
 			}
 			else {
+				companydataTable.ajax.reload();
 				return false;
 			}
 		});
