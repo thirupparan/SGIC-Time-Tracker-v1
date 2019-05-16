@@ -48,7 +48,7 @@ foreach($result as $row)
 	{
 		$status = '<span class="label label-success">Active</span>';
 		$statusCheck ='<input type="checkbox" name="delete" checked id="'.$row["company_id"].'" class="delete"  data-status="'.$row["company_status"].'">';
-		$updatebutton='<button type="button" name="update" id="'.$row["company_id"].'" class="btn btn-warning btn-xs update">EDit</button>';
+		$updatebutton='<button type="button" name="update" id="'.$row["company_id"].'" class="btn btn-warning btn-xs update">Edit</button>';
 	}
 	else
 	{

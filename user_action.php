@@ -12,7 +12,7 @@ if(isset($_POST['btn_action']))
 		try{
 		$query = "
 		INSERT INTO user (user_email, user_password, user_name, user_type, user_status) 
-		VALUES (:user_email, :user_password, :user_name, :user_type, :user_status)
+		VALUES (TRIM(:user_email), TRIM(:user_password), TRIM(:user_name), TRIM(:user_type), :user_status)
 		";	
 		$statement = $connect->prepare($query);
 		if($statement->execute(
@@ -35,17 +35,12 @@ if(isset($_POST['btn_action']))
 		VALUES (:user_id, '#####', '#####', '#####', '####', 'person.png');
 		";	
 		$statement = $connect->prepare($query);
-		$statement->execute(
+		if($statement->execute(
 			array(
 				':user_id'		=>	$connect->lastInsertId()
 				
 			)
-		);
-
-		$result = $statement->fetchAll();
-
-
-		if(isset($result))
+		))
 		{
 			echo 'New User Added ';
 		}
@@ -117,7 +112,7 @@ if(isset($_POST['btn_action']))
 		{
 			if($statement->rowCount()>0){
 				echo 'User Details Edited';
-			}}else if($statement->rowCount()==0){
+			}else if($statement->rowCount()==0){
 				echo 'No changes had done on User Details';
 			}else{
 				echo 'Error occured';
