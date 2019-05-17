@@ -251,7 +251,7 @@ foreach($result as $row)
 				$('#loader-icon').show();
 				$('#targetLayer').hide();
 				var form_data = $(this).serialize();
-				console.log(form_data);
+			
 				$(this).ajaxSubmit({
 					data: form_data,
 					target: '#targetLayer',

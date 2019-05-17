@@ -10,7 +10,7 @@ if(!isset($_SESSION['type']))
 
 ?>
 
-<span id="alert_action"></span>
+
 <div class="row">
 	<div class="col-lg-12">
 		<div class="panel panel-default">
@@ -28,9 +28,12 @@ if(!isset($_SESSION['type']))
 				</div>
 				<div style="clear:both"></div>
 			</div>
+
+			
 			<div class="panel-body">
 				<div class="row">
 					<div class="col-sm-12 table-responsive">
+					<span id="alert_action"></span>
 						<table id="project_data" class="table table-bordered table-striped">
 							<thead>
 							<tr>

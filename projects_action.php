@@ -12,12 +12,13 @@ if(isset($_POST['btn_action']))
 {
 	if($_POST['btn_action'] == 'Add')
 	{
+		try{
 		$query = "
 		INSERT INTO project (user_id,project_name,start_date,description,remarks,project_status) 
 		VALUES (:user_id,:project_name,:start_date,:description,:remarks,:project_status)
 		";
 		$statement = $connect->prepare($query);
-		$statement->execute(
+		if($statement->execute(
 			array(
 				':user_id'	=>		$_SESSION["user_id"],
 				':project_name'	=>	$_POST["project_name"],
@@ -26,13 +27,16 @@ if(isset($_POST['btn_action']))
 				':remarks'	=>	$_POST["remarks"],
 				':project_status'	=>	'In_progress'
 			)
-		);
-		$result = $statement->fetchAll();
-		if(isset($result))
+		))
+		
 		{
 			echo 'Project Details Added';
 		
 		}
+	}catch(PDOException $e)
+	{
+		echo 'Error occured : ' . $e->getMessage();
+	}
 	}
 	
 	if($_POST['btn_action'] == 'fetch_single')
@@ -86,23 +90,28 @@ if(isset($_POST['btn_action']))
 		{
 			$status = 'Finished';	
 		}
+
+		try{
 		$query = "
 		UPDATE project 
 		SET project_status = :project_status 
 		WHERE project_id = :project_id
 		";
 		$statement = $connect->prepare($query);
-		$statement->execute(
+		if($statement->execute(
 			array(
 				':project_status'	=>	$status,
 				':project_id'		=>	$_POST["project_id"]
 			)
-		);
-		$result = $statement->fetchAll();
-		if(isset($result))
+		))
+		
 		{
-			echo 'Company status change to ' . $status;
+			echo 'Prject status change to ' . $status;
 		}
+	}catch(PDOException $e)
+	{
+		echo 'Error occured : ' . $e->getMessage();
+	}
 	}
 }
 

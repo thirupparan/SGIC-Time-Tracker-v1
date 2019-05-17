@@ -9,6 +9,7 @@ include('database_config_dashboard.php');
 
 if($_POST['action']=='change_password')
 {
+	try{
 	if($_POST["user_new_password"] != '')
 	{
 		$query = "
@@ -20,12 +21,16 @@ if($_POST['action']=='change_password')
 		//echo $query;
 	}
 	$statement = $connect->prepare($query);
-	$statement->execute();
-	$result = $statement->fetchAll();
-	if(isset($result))
+	
+
+	if($statement->execute())
 	{
 		echo '<div class="alert alert-success">Password changed </div>';
 	}
+}catch(PDOException $e)
+{
+	echo 'Error occured : ' . $e->getMessage();
+}
 }
 
 elseif($_POST['action']=='edit_profile')
@@ -48,7 +53,7 @@ elseif($_POST['action']=='edit_profile')
 		//,photo = :photo
 
 		$statement = $connect->prepare($query);
-		$statement->execute(
+		if($statement->execute(
 			array(
 				':first_name'	=>	$_POST["first_name"],
 				':last_name'	=>	$_POST["last_name"],
@@ -56,11 +61,7 @@ elseif($_POST['action']=='edit_profile')
 				':contact_number'	=>	$_POST["contact_number"],
 				':user_id'		=>$_SESSION["user_id"]
 			)
-		);
-
-	
-		$result = $statement->fetchAll();
-		if(isset($result))
+		))
 		{
 			echo '<div class="alert alert-success">Profile details changed </div>';
 		}
