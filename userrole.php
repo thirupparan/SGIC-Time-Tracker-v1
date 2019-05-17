@@ -7,7 +7,6 @@ if(!isset($_SESSION['type']))
 	header("location:login.php");
 }
 ?>
-	
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="panel panel-default">
@@ -43,8 +42,10 @@ if(!isset($_SESSION['type']))
             </div>
         </div>
     </div>
+
     <div id="userroleModal" class="modal fade">
     	<div class="modal-dialog">
+		
     		<form method="post" id="userrole_form">
     			<div class="modal-content">
     				<div class="modal-header">
@@ -52,6 +53,8 @@ if(!isset($_SESSION['type']))
 						<h4 class="modal-title"><i class="fa fa-plus"></i> Add User role</h4>
     				</div>
     				<div class="modal-body">
+
+					<span id="alert_msg_modal"></span>
     					<label>Enter User role</label>
 						<input type="text" name="role_name" id="role_name" class="form-control" required />
     				</div>
@@ -84,20 +87,28 @@ $(document).ready(function(){
 		event.preventDefault();
 		$('#action').attr('disabled','disabled');
 		var form_data = $(this).serialize();
+		console.log(form_data);
 		$.ajax({
 			url:"userrole_action.php",
 			method:"POST",
 			data:form_data,
+			dataType:"json",
 			success:function(data)
 			{
-				$('#userrole_form')[0].reset();
-				$('#userroleModal').modal('hide');
-				$('#alert_action').fadeIn().html('<div class="alert alert-success">'+data+'</div>');
-				$('#action').attr('disabled', false);
-				roledataTable.ajax.reload();
-				setTimeout(() => {
+				console.log(data);
+				if(data.type=='success'){
+					$('#userrole_form')[0].reset();
+					$('#userroleModal').modal('hide');
+			 		$('#alert_action').fadeIn().html('<div class="alert alert-success">'+data.msg+'</div>');
+					 $('#action').attr('disabled', false);
+					roledataTable.ajax.reload();
+					setTimeout(() => {
 						$('#alert_action').html('');
 					}, 1500);
+				}else if(data.type=='err'){
+					$('#alert_msg_modal').fadeIn().html('<div class="alert alert-danger">'+data.msg+'</div>');
+					$('#action').attr('disabled', false);
+				}
 			}
 		})
 	});
@@ -156,13 +167,16 @@ $(document).ready(function(){
 				url:"userrole_action.php",
 				method:"POST",
 				data:{role_id:role_id, status:status, btn_action:btn_action},
+				dataType:"json",
 				success:function(data)
 				{
-					$('#alert_action').fadeIn().html('<div class="alert alert-info">'+data+'</div>');
+					if(data.type=='success'){
+					$('#alert_action').fadeIn().html('<div class="alert alert-info">'+data.msg+'</div>');
 					roledataTable.ajax.reload();
 					setTimeout(() => {
 						$('#alert_action').html('');
 					}, 1500);
+					}
 				}
 			})
 		}
