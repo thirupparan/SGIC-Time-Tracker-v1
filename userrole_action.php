@@ -9,10 +9,10 @@ if(isset($_POST['btn_action']))
 	{
 		$query = "
 		INSERT INTO user_role (role_name,role_status) 
-		SELECT * FROM (SELECT :role_name , :role_status)
+		SELECT * FROM (SELECT TRIM(:role_name), :role_status)
 		AS tmp
 WHERE NOT EXISTS (
-    SELECT role_name FROM user_role WHERE role_name = :role_name
+    SELECT role_name FROM user_role WHERE role_name = TRIM(:role_name)
 ) LIMIT 1"
 		;
 

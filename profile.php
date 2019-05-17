@@ -3,7 +3,7 @@
 include('./fragments/header.php');
 include('database_config_dashboard.php');
 
-
+try{
 $query = "
 SELECT 
 user_profile.first_name,user_profile.last_name,user_profile.address,user_profile.address,user_profile.contact_number,user_profile.photo,user.user_name,user.user_email,user.user_password FROM user_profile INNER JOIN user ON user_profile.user_id=user.user_id
@@ -36,8 +36,9 @@ foreach($result as $row)
 	$user_email = $row['user_email'];
 	$user_password = $row['user_password'];
 }
-
-
+}catch(PDOException $e){
+	echo 'error occured please check ' .$e->getMessage();
+}
 
 ?>
 

@@ -20,9 +20,9 @@ if($_POST['action']=='change_password')
 		//echo $query;
 	}
 	$statement = $connect->prepare($query);
-	$statement->execute();
-	$result = $statement->fetchAll();
-	if(isset($result))
+	
+
+	if($statement->execute())
 	{
 		echo '<div class="alert alert-success">Password changed </div>';
 	}
@@ -41,14 +41,14 @@ elseif($_POST['action']=='edit_profile')
 		UPDATE 
 		user_profile SET 
 		first_name = :first_name,
-		last_name = :last_name,address = :address,contact_number = :contact_number
+		last_name = :last_name,address = TRIM(:address),contact_number = TRIM(:contact_number)
 		WHERE user_id =:user_id
 		";
 		//echo $query;
 		//,photo = :photo
 
 		$statement = $connect->prepare($query);
-		$statement->execute(
+		if($statement->execute(
 			array(
 				':first_name'	=>	$_POST["first_name"],
 				':last_name'	=>	$_POST["last_name"],
@@ -56,11 +56,10 @@ elseif($_POST['action']=='edit_profile')
 				':contact_number'	=>	$_POST["contact_number"],
 				':user_id'		=>$_SESSION["user_id"]
 			)
-		);
+		))
 
 	
-		$result = $statement->fetchAll();
-		if(isset($result))
+		
 		{
 			echo '<div class="alert alert-success">Profile details changed </div>';
 		}
