@@ -29,6 +29,13 @@ include('function.php');
 				<div class="row">
 					<div class="col-sm-12 table-responsive">
 					<span id="alert_action"></span>
+					<?php
+// if(isset($_GET["newuser_added"])){
+//     if($_GET["newuser_added"]=="success"){
+//         echo '<div class="alert alert-success">new user added </div>';
+//     }
+// }
+// ?>
 						<table id="user_data" class="table table-bordered table-striped">
 							<thead>
 								<tr>
@@ -139,8 +146,8 @@ include('function.php');
 						<input type="email" name="user_email" id="user_email" class="form-control" required />
 					</div>
 					<div class="form-group">
-						<label>Enter User Password</label>
-						<input type="password" name="user_password" id="user_password" class="form-control" required />
+						<label class="sr-only">Enter User Password</label>
+						<input type="hidden" name="user_password" id="user_password" class="form-control" value ="<?php echo randomPassword();?>"required />
 					</div>
 
 					<div class="form-group">

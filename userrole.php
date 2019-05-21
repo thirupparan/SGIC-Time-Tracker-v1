@@ -1,10 +1,9 @@
 <?php
 //category.php
-include('./fragments/header.php');
-include('database_config_dashboard.php');
-if(!isset($_SESSION['type']))
-{
-	header("location:login.php");
+include './fragments/header.php';
+include 'database_config_dashboard.php';
+if (!isset($_SESSION['type'])) {
+    header("location:login.php");
 }
 ?>
 	<div class="row">
@@ -18,7 +17,7 @@ if(!isset($_SESSION['type']))
                     </div>
                     <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6">
                         <div class="row" align="right">
-                             <button type="button" name="add" id="add_button" data-toggle="modal" data-target="#userroleModal" class="btn btn-success btn-xs">Add</button>   		
+                             <button type="button" name="add" id="add_button" data-toggle="modal" data-target="#userroleModal" class="btn btn-success btn-xs">Add</button>
                         </div>
                     </div>
                     <div style="clear:both"></div>
@@ -68,7 +67,7 @@ if(!isset($_SESSION['type']))
     	</div>
     </div>
 	<?php
-include('./fragments/script.html');
+include './fragments/script.html';
 ?>
 <script>
 
@@ -123,7 +122,7 @@ $.validator.addMethod(
 			dataType:"json",
 			success:function(data)
 			{
-				console.log(data);
+				//console.log(data);
 				if(data.type=='success'){
 					$('#userrole_form')[0].reset();
 					$('#userroleModal').modal('hide');
@@ -215,13 +214,12 @@ $.validator.addMethod(
 		}
 	});
 
-	
+
 });
 </script>
 
 <?php
-include('./fragments/footer.html');
+include './fragments/footer.html';
 ?>
+<?php 
 
-
-				

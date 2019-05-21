@@ -2,7 +2,7 @@
 
 //category_fetch.php
 
-include('database_config_dashboard.php');
+include 'database_config_dashboard.php';
 
 $query = '';
 
@@ -10,24 +10,19 @@ $output = array();
 
 $query .= "SELECT * FROM user_role ";
 
-if(isset($_POST["search"]["value"]))
-{
-	$query .= 'WHERE role_name LIKE "%'.$_POST["search"]["value"].'%" ';
-	$query .= 'OR role_status LIKE "%'.$_POST["search"]["value"].'%" ';
+if (isset($_POST["search"]["value"])) {
+ $query .= 'WHERE role_name LIKE "%' . $_POST["search"]["value"] . '%" ';
+ $query .= 'OR role_status LIKE "%' . $_POST["search"]["value"] . '%" ';
 }
 
-if(isset($_POST['order']))
-{
-	$query .= 'ORDER BY '.$_POST['order']['0']['column'].' '.$_POST['order']['0']['dir'].' ';
-}
-else
-{
-	$query .= 'ORDER BY role_id DESC ';
+if (isset($_POST['order'])) {
+ $query .= 'ORDER BY ' . $_POST['order']['0']['column'] . ' ' . $_POST['order']['0']['dir'] . ' ';
+} else {
+ $query .= 'ORDER BY role_id DESC ';
 }
 
-if($_POST['length'] != -1)
-{
-	$query .= 'LIMIT ' . $_POST['start'] . ', ' . $_POST['length'];
+if ($_POST['length'] != -1) {
+ $query .= 'LIMIT ' . $_POST['start'] . ', ' . $_POST['length'];
 }
 
 $statement = $connect->prepare($query);
@@ -65,19 +60,17 @@ foreach($result as $row)
 }
 
 $output = array(
-	"draw"			=>	intval($_POST["draw"]),
-	"recordsTotal"  	=>  $filtered_rows,
-	"recordsFiltered" 	=> 	get_total_all_records($connect),
-	"data"				=>	$data
+ "draw"            => intval($_POST["draw"]),
+ "recordsTotal"    => $filtered_rows,
+ "recordsFiltered" => get_total_all_records($connect),
+ "data"            => $data,
 );
 
 function get_total_all_records($connect)
 {
-	$statement = $connect->prepare("SELECT * FROM user_role");
-	$statement->execute();
-	return $statement->rowCount();
+ $statement = $connect->prepare("SELECT * FROM user_role");
+ $statement->execute();
+ return $statement->rowCount();
 }
 
 echo json_encode($output);
-
-?>
