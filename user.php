@@ -36,7 +36,6 @@ include('function.php');
 									<th>Email</th>
 									<th>Name</th>
 									<th>Role</th>
-									<th>Status</th>
 									<th>Edit</th>
 									<th>Active/Inactive</th>
 									<th>Company</th>
@@ -293,8 +292,8 @@ include('function.php');
 			},
 			"columnDefs": [
 				{
-					"target": [5, 6, 7],
-					"orderable": true
+					"target": [4,5,6],
+					"orderable": false
 				}
 			],
 			"fnDrawCallback": function() {

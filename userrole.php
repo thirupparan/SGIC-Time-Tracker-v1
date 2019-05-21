@@ -31,7 +31,6 @@ if(!isset($_SESSION['type']))
                     			<thead><tr>
 									<th>ID</th>
 									<th>User role</th>
-									<th>Status</th>
 									<th>Edit</th>
 									<th>Active/Inactive</th>
 								</tr></thead>
@@ -46,7 +45,7 @@ if(!isset($_SESSION['type']))
     <div id="userroleModal" class="modal fade">
     	<div class="modal-dialog">
 		
-    		<form method="post" id="userrole_form">
+    		<form method="post" id="userrole_form"  autocomplete="off">
     			<div class="modal-content">
     				<div class="modal-header">
     					<button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -76,11 +75,40 @@ include('./fragments/script.html');
 
 $(document).ready(function(){
 
+	jQuery.validator.addMethod("noSpace", function(value, element) { 
+  return value.indexOf(" ") < 0 && value != ""; 
+}, "No space please and don't leave it empty");
+
+$.validator.addMethod(
+        "regex",
+        function(value, element, regexp) {
+            var re = new RegExp(regexp);
+            return this.optional(element) || re.test(value);
+        },
+        "Please check your input."
+);
 	$('#add_button').click(function(){
 		$('#userrole_form')[0].reset();
 		$('.modal-title').html("<i class='fa fa-plus'></i> Add Role");
 		$('#action').val('Add');
 		$('#btn_action').val('Add');
+	});
+
+	$('#userrole_form').validate({
+		rules:{
+			role_name:{
+				required:true,
+				noSpace:true,
+				regex: "^[a-zA-Z'.\\s]{1,40}$" 
+			}
+		},
+		messages:{
+			role_name:{
+				required:"please Enter Role name",
+				noSpace:"Spaces Not Allowed",
+				regex:"Only character allowed"
+			}
+		}
 	});
 
 	$(document).on('submit','#userrole_form', function(event){
@@ -143,7 +171,7 @@ $(document).ready(function(){
 		},
 		"columnDefs":[
 			{
-				"targets":[3, 4],
+				"targets":[2, 3],
 				"orderable":false,
 			},
 		]

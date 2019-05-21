@@ -160,15 +160,22 @@ $events = $req->fetchAll();
 			eventLimit: true, // allow "more" link when too many events
 			selectable: true,
 			selectHelper: true,
-			select: function(start, end) {
-				
-				// $('#ModalAdd #start').val(moment(start).format('YYYY-MM-DD HH:mm:ss'));
-				// $('#ModalAdd #end').val(moment(end).format('YYYY-MM-DD HH:mm:ss'));
-				// $('#ModalAdd').modal('show');
-				var date=moment(start).format('YYYY-MM-DD');
-				//window.location.href=encodeURI(`managetask.php?date=${date}`);
-				window.location.href=encodeURI(`task.php?date=${date}`);
-			},
+		
+			dayClick: function( date, allDay, jsEvent, view ) { 
+                    var myDate = new Date();
+										myDate.setDate(myDate.getDate());
+
+                    if (date > myDate) {
+                    
+                    alert("You Can't Enter Time Sheets for this!");    
+                    }
+                    else
+                    {
+											var date=moment(date).format('YYYY-MM-DD');
+											window.location.href=encodeURI(`task.php?date=${date}`); 
+									
+                     }
+			   }   ,
 			eventRender: function(event, element) {
 				element.bind('dblclick', function() {
 					$('#ModalEdit #id').val(event.id);
@@ -210,8 +217,11 @@ $events = $req->fetchAll();
 					start: '<?php echo $start; ?>',
 					end: '<?php echo $end; ?>',
 					color: '<?php echo $event['color']; ?>',
+					
+  
 				},
 			<?php endforeach; ?>
+			
 			]
 		});
 		

@@ -50,13 +50,13 @@ foreach($result as $row)
 	$statusCheck='';
 	if($row["user_status"] == 'Active')
 	{
-		$status = '<span class="label label-success">Active</span>';
+	
 		$statusCheck='<input type="checkbox" name="delete" checked id="'.$row["user_id"].'" class="delete"  data-status="'.$row["user_status"].'">';
 		$updatebutton='<button type="button" name="update" id="'.$row["user_id"].'" class="btn btn-warning btn-xs update">Edit</button>';
 	}
 	else
 	{
-		$status = '<span class="label label-danger">Inactive</span>';
+	
 		$statusCheck='<input type="checkbox" name="delete" id="'.$row["user_id"].'" class="delete"  data-status="'.$row["user_status"].'">';
 		$updatebutton='<button type="button" disabled  name="update" id="'.$row["user_id"].'" class="btn btn-warning btn-xs update">Edit</button>';
 	}
@@ -65,9 +65,6 @@ foreach($result as $row)
 	$sub_array[] = $row['user_email'];
 	$sub_array[] = $row['user_name'];
 	$sub_array[] = $row['role_name'];
-	$sub_array[] = $status;
-	
-	
 	$sub_array[] = $updatebutton;
 	$sub_array[] = $statusCheck;
 	$sub_array[] = '<button type="button" name="company" id="'.$row["user_id"].'" class="btn btn-warning btn-xs company">Company</button>';
