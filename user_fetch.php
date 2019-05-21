@@ -15,6 +15,7 @@ if(isset($_POST["search"]["value"]))
 {
 	$query .= '(user_email LIKE "%'.$_POST["search"]["value"].'%" ';
 	$query .= 'OR user_name LIKE "%'.$_POST["search"]["value"].'%" ';
+	
 	$query .= 'OR user_status LIKE "%'.$_POST["search"]["value"].'%") ';
 }
 
@@ -67,7 +68,7 @@ foreach($result as $row)
 	$sub_array[] = $row['role_name'];
 	$sub_array[] = $updatebutton;
 	$sub_array[] = $statusCheck;
-	$sub_array[] = '<button type="button" name="company" id="'.$row["user_id"].'" class="btn btn-warning btn-xs company">Company</button>';
+	$sub_array[] = '<button type="button" name="company" id="'.$row["user_id"].'" class="btn btn-primary btn-xs company">Manage</button>';
 	$data[] = $sub_array;
 }
 

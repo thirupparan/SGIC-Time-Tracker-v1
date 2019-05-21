@@ -1,5 +1,4 @@
 <?php
-//category.php
 include './fragments/header.php';
 include 'database_config_dashboard.php';
 if (!isset($_SESSION['type'])) {

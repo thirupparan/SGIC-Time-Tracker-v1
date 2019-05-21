@@ -1,20 +1,10 @@
 <?php
 
-//category_action.php
-include('database_config_dashboard.php');
+
+include('database_config_dashboard.php'); 
 include('query_execute.inc.php');
 
-// $role_name='';
-// function validate_params(){
-	
-// 		if(empty(trim($_POST["role_name"]))){
-// 			$msg=array('msg'=>'Empty values Inserted','type'=>'err');
-// 			die(json_encode($msg));
-			
-// 		}else{
-			
-// 		}
-// }
+
 
 if(isset($_POST['btn_action']))
 {

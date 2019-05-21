@@ -37,7 +37,6 @@ if(!isset($_SESSION["type"])){
 									<th>Contact Number</th>
 									<th>Email</th>
 									<th>Address</th>
-									<th>Status</th>
 									<th>Edit</th>
 									<th>Active/Inactive</th>
 								</tr>
@@ -52,7 +51,7 @@ if(!isset($_SESSION["type"])){
  
 <div id="companyModal" class="modal fade">
 	<div class="modal-dialog">
-		<form method="post" id="company_form">
+		<form method="post" id="company_form" autocomplete="off">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -64,10 +63,10 @@ if(!isset($_SESSION["type"])){
 						<label>Enter Company Name</label>
 						<input type="text" name="company_name" id="company_name" class="form-control" required />
 					</div>
-
+					
 					<div class="form-group">
 						<label>Enter Contact Number</label>
-						<input type="number" name="contact_number" id="contact_number" class="form-control" required />
+						<input type="text" name="contact_number" id="contact_number" class="form-control" required />
 					</div>
 
 					<div class="form-group">
@@ -103,6 +102,71 @@ if(!isset($_SESSION["type"])){
 			$('.modal-title').html("<i class='fa fa-plus'></i> Add Company");
 			$('#action').val('Add');
 			$('#btn_action').val('Add');
+		});
+
+
+		$.validator.addMethod("noSpace", function(value, element) { 
+  return value.indexOf(" ") < 0 && value != ""; 
+}, "No space please and don't leave it empty");
+
+$.validator.addMethod(
+        "regex",
+        function(value, element, regexp) {
+            var re = new RegExp(regexp);
+            return this.optional(element) || re.test(value);
+        },
+        "Please check your input."
+);
+
+
+
+
+		$('#company_form').validate({
+			  
+		rules:{
+			company_name:{
+				required:true,
+				noSpace:true,
+				regex: "^[a-zA-Z'.\\s]{1,40}$" 
+			},
+			contact_number:{
+				required:true,
+				digits:true,
+				minlength:10,
+				maxlength:10
+			},
+			email:{
+				required:true,
+				email:true
+			},
+			address:{
+				required:true,
+				minlength:10,
+				maxlength:40
+			}
+		},
+		messages:{
+			company_name:{
+				required:"please Enter Company Name",
+				noSpace:"Spaces Not Allowed",
+				regex:"Only character allowed"
+			},
+			contact_number:{
+				required:"please Enter Contact Number",
+				minlength:"phone number must be of 10 numbers",
+				maxlength:"phone number must be of 10 numbers"
+				
+			},
+			email:{
+				required:"please Enter Email Address",
+				email:"please provide valid email address"
+			},
+			address:{
+				required:"please enter Address",
+				minlength:"Address should be atleast 10 characters",
+				maxlength:"Address should not exceed 40 characters"
+			}
+		}
 		});
 
 		$(document).on('submit', '#company_form', function (event) {
@@ -159,7 +223,7 @@ if(!isset($_SESSION["type"])){
 			},
 			"columnDefs": [
 				{
-					"targets": [6, 7],
+					"targets": [2,3,5, 6],
 					"orderable": false,
 				},
 			],

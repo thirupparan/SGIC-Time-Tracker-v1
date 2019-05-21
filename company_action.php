@@ -2,6 +2,7 @@
 
 //category_action.php
 include('database_config_dashboard.php');
+include('query_execute.inc.php');
 
 if(isset($_POST['btn_action']))
 {

@@ -1,5 +1,5 @@
 <?php
-//user.php
+
 include('./fragments/header.php');
 if(!isset($_SESSION["type"])){
 	header("location:index.php");
@@ -45,7 +45,7 @@ include('function.php');
 									<th>Role</th>
 									<th>Edit</th>
 									<th>Active/Inactive</th>
-									<th>Company</th>
+									<th>Recruitments</th>
 
 								</tr>
 							</thead>
@@ -57,7 +57,7 @@ include('function.php');
 
 	</div>
 </div>
-
+ 
 <div id="companyModal" class="modal fade">
 	<div class="modal-dialog modal-lg">
 	
@@ -130,7 +130,7 @@ include('function.php');
 
 <div id="userModal" class="modal fade">
 	<div class="modal-dialog">
-		<form method="post" id="user_form">
+		<form method="post" id="user_form" autocomplete="off">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -207,6 +207,8 @@ include('function.php');
 			fetchCompany();
 		});
 
+		
+
 		$(document).on('submit', '#company_form', function (event) {
 			event.preventDefault();
 			$('#btn_action_company').attr('disabled', 'disabled');
@@ -276,11 +278,11 @@ include('function.php');
 			$('#companyModal').modal('show');
 		});
 
-	});
+	
 
 
 	
-	$(document).ready(function () {
+
 		$('#add_button').click(function () {
 			$('#user_form')[0].reset();
 			$('.modal-title').html("<i class='fa fa-plus'></i> Add User");
@@ -292,6 +294,9 @@ include('function.php');
 			"processing": true,
 			"serverSide": true,
 			"order": [],
+			"language": {
+    			"search": "Search by Email or Name:"
+ 				 },
 			"ajax": {
 				url: "user_fetch.php",
 				type: "POST",
@@ -299,7 +304,7 @@ include('function.php');
 			},
 			"columnDefs": [
 				{
-					"target": [4,5,6],
+					"targets": [4,5,6],
 					"orderable": false
 				}
 			],
@@ -307,11 +312,55 @@ include('function.php');
             jQuery('#user_data .delete').bootstrapToggle({
 				on: 'Active',
       			off: 'Inactive',
-				  size:'mini'
+				size:'mini'
 			});
 		},
 			"pageLength": 25
 		});
+
+$.validator.addMethod("noSpace", function(value, element) { 
+  return value.indexOf(" ") < 0 && value != ""; 
+}, "No space please and don't leave it empty");
+
+$.validator.addMethod(
+        "regex",
+        function(value, element, regexp) {
+            var re = new RegExp(regexp);
+            return this.optional(element) || re.test(value);
+        },
+        "Please check your input."
+);
+
+
+
+
+		$('#user_form').validate({
+			 
+		rules:{
+			user_name:{
+				required:true,
+				noSpace:true,
+				regex: "^[a-zA-Z'.\\s]{1,40}$" 
+			},
+			user_email:{
+				required:true,
+				email:true
+			}
+		},
+		messages:{
+			user_name:{
+				required:"please Enter User name",
+				noSpace:"Spaces Not Allowed",
+				regex:"Only character allowed"
+			},
+			user_email:{
+				required:"please Enter Email",
+				noSpace:"Spaces Not Allowed",
+				email:"please provide valid email"
+			}
+		}
+		});
+		
 
 		$(document).on('submit', '#user_form', function (event) {
 			event.preventDefault();
