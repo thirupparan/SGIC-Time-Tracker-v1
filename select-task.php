@@ -65,15 +65,16 @@ function print_duration($timeMins){
  {  
       while($row = mysqli_fetch_array($result))  
       {  
+           if($_GET['uistate']=="enabled"){
            $output .= '  
                 <tr>  
                 <td id="projects">
-                <select class ="projects" data-id0="'.$row["id"].'">';
+                <select class ="projects" data-id0="'.$row["id"].'" >';
      
                     $output .= fill_project_list($connect,$row["project_id"]);
                     $output .= ' </select>
                 </td> 
-                     <td class="taskname" data-id1="'.$row["id"].'" contenteditable>'.$row["title"].'</td>  
+                     <td class="taskname" data-id1="'.$row["id"].'" contenteditable=true>'.$row["title"].'</td>  
                      <td>
                      <select class ="duration" data-id2="'.$row["id"].'">';
                      $output .=print_duration($row["duration"]);
@@ -85,7 +86,31 @@ function print_duration($timeMins){
                      <td><button type="button" name="delete_btn" data-id3="'.$row["id"].'" class="btn btn-xs btn-danger btn_delete">x</button></td>  
                 </tr>  
            ';  
+           }else if($_GET['uistate']=="disabled"){
+               $output .= '  
+                    <tr>  
+                    <td id="projects">
+                    <select class ="projects" data-id0="'.$row["id"].'" disabled>';
+         
+                        $output .= fill_project_list($connect,$row["project_id"]);
+                        $output .= ' </select>
+                    </td> 
+                         <td>'.$row["title"].'</td>  
+                         <td>
+                         <select class ="duration" data-id2="'.$row["id"].'" disabled>';
+                         $output .=print_duration($row["duration"]);
+                         $output .='</select>
+                     
+                         </td>
+    
+                         <td>'.$row["description"].'</td>  
+                          
+                    </tr>  
+               '; 
+           } 
       }  
+
+      if($_GET['uistate']=="enabled"){
       $output .= '  
            <tr>  
            <td>
@@ -104,7 +129,8 @@ function print_duration($timeMins){
                 <td id="description" contenteditable></td>  
                 <td><button type="button" name="btn_add" id="btn_add" class="btn btn-xs btn-success">+</button></td>  
            </tr>  
-      ';  
+      '; 
+      } 
  }  
  else  
  {  
