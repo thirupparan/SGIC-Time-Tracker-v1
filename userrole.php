@@ -2,7 +2,7 @@
 include './fragments/header.php';
 include 'database_config_dashboard.php';
 if (!isset($_SESSION['type'])) {
-    header("location:login.php");
+ header("location:login.php");
 }
 ?>
 	<div class="row">
@@ -42,7 +42,7 @@ if (!isset($_SESSION['type'])) {
 
     <div id="userroleModal" class="modal fade">
     	<div class="modal-dialog">
-		
+
     		<form method="post" id="userrole_form"  autocomplete="off">
     			<div class="modal-content">
     				<div class="modal-header">
@@ -52,8 +52,10 @@ if (!isset($_SESSION['type'])) {
     				<div class="modal-body">
 
 					<span id="alert_msg_modal"></span>
+					<div class="form-group">
     					<label>Enter User role</label>
 						<input type="text" name="role_name" id="role_name" class="form-control" required />
+					</div>
     				</div>
     				<div class="modal-footer">
     					<input type="hidden" name="role_id" id="role_id"/>
@@ -72,9 +74,22 @@ include './fragments/script.html';
 
 
 $(document).ready(function(){
+	$.validator.setDefaults({
+		errorClass:'help-block',
+		highlight:function(element){
+			$(element)
+			.closest('.form-group')
+			.addClass('has-error');
+		},
+		unhighlight:function(element){
+			$(element)
+			.closest('.form-group')
+			.removeClass('has-error');
+		}
+	});
 
-	jQuery.validator.addMethod("noSpace", function(value, element) { 
-  return value.indexOf(" ") < 0 && value != ""; 
+	$.validator.addMethod("noSpace", function(value, element) {
+  return value.indexOf(" ") < 0 && value != "";
 }, "No space please and don't leave it empty");
 
 $.validator.addMethod(
@@ -85,28 +100,44 @@ $.validator.addMethod(
         },
         "Please check your input."
 );
-	$('#add_button').click(function(){
-		$('#userrole_form')[0].reset();
-		$('.modal-title').html("<i class='fa fa-plus'></i> Add Role");
-		$('#action').val('Add');
-		$('#btn_action').val('Add');
-	});
 
-	$('#userrole_form').validate({
+
+	var validatorUser = $('#userrole_form').validate({
 		rules:{
 			role_name:{
 				required:true,
 				noSpace:true,
-				regex: "^[a-zA-Z'.\\s]{1,40}$" 
+				regex: "^[a-zA-Z'.\\s]{1,40}$" ,
+				remote: {
+					url: "validate.php",
+					type: "post",
+					data: {
+						param:'rolename',
+						value: function(){
+							return $('#role_name').val();
+						}
+					}
+				}
+
+				
 			}
 		},
 		messages:{
 			role_name:{
 				required:"please Enter Role name",
 				noSpace:"Spaces Not Allowed",
-				regex:"Only character allowed"
+				regex:"Only character allowed",
+				remote:"Already exist"
 			}
 		}
+	});
+
+	$('#add_button').click(function(){
+		$('#userrole_form')[0].reset();
+		$('.modal-title').html("<i class='fa fa-plus'></i> Add Role");
+		$('#action').val('Add');
+		$('#btn_action').val('Add');
+		validatorUser.resetForm();
 	});
 
 	$(document).on('submit','#userrole_form', function(event){
@@ -121,7 +152,7 @@ $.validator.addMethod(
 			dataType:"json",
 			success:function(data)
 			{
-				//console.log(data);
+				console.log(data);
 				if(data.type=='success'){
 					$('#userrole_form')[0].reset();
 					$('#userroleModal').modal('hide');
@@ -134,6 +165,9 @@ $.validator.addMethod(
 				}else if(data.type=='err'){
 					$('#alert_msg_modal').fadeIn().html('<div class="alert alert-danger">'+data.msg+'</div>');
 					$('#action').attr('disabled', false);
+					setTimeout(() => {
+						$('#alert_msg_modal').html('');
+					}, 1500);
 				}
 			}
 		})
@@ -196,8 +230,15 @@ $.validator.addMethod(
 				dataType:"json",
 				success:function(data)
 				{
+
 					if(data.type=='success'){
-					$('#alert_action').fadeIn().html('<div class="alert alert-info">'+data.msg+'</div>');
+					$('#alert_action').fadeIn().html('<div class="alert alert-success">'+data.msg+'</div>');
+					roledataTable.ajax.reload();
+					setTimeout(() => {
+						$('#alert_action').html('');
+					}, 1500);
+					}if(data.type=='err'){
+						$('#alert_action').fadeIn().html('<div class="alert alert-danger">'+data.msg+'</div>');
 					roledataTable.ajax.reload();
 					setTimeout(() => {
 						$('#alert_action').html('');
@@ -220,5 +261,4 @@ $.validator.addMethod(
 <?php
 include './fragments/footer.html';
 ?>
-<?php 
-
+<?php

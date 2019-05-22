@@ -1,0 +1,33 @@
+<?php
+
+	require_once 'message.inc.php';
+    function execute_query($success_msg,$err_msg,$connect,$query,$array_param){
+		$msg=null;
+	try{
+		
+	$statement = $connect->prepare($query);
+		if($statement->execute($array_param))
+		{
+			
+			if($statement->rowCount()>0){
+				
+				$msg=printJsonMsg($success_msg,'success');
+			}else if($statement->rowCount()==0){
+				
+				$msg=printJsonMsg($err_msg,'err');
+			}else{
+				
+				$msg=printJsonMsg('error occured please check','err');
+			}
+			
+		}
+	}catch(PDOException $e)
+	{
+	
+
+	$msg=printJsonMsg( $e->getMessage(),'err');
+	}
+	echo json_encode($msg);
+    }
+    
+    ?>
