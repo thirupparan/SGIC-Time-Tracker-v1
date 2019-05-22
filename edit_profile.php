@@ -9,8 +9,21 @@ include('database_config_dashboard.php');
 
 if($_POST['action']=='change_password')
 {
-	if($_POST["user_new_password"] != '')
+	$newPass =$_POST["user_new_password"];
+	$conPass = $_POST["user_re_enter_password"];
+	if($_POST["user_current_password"]!=''){
+		$query = "SELECT user_password FROM user WHERE user_id = '".$_SESSION["user_id"]."' ";
+		$statement = $connect->prepare($query);
+		$statement->execute();
+		$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+		$oldPass=$_POST["user_current_password"];
+		
+		if(password_verify($oldPass,$result['user_password'])){
+			
+			if($newPass==$conPass)
 	{
+		
 		$query = "
 		UPDATE user SET  
 			user_password = '".password_hash($_POST["user_new_password"], PASSWORD_DEFAULT)."' 
@@ -18,15 +31,24 @@ if($_POST['action']=='change_password')
 		";
 
 		//echo $query;
-	}
-	$statement = $connect->prepare($query);
+		$statement = $connect->prepare($query);
 	
 
-	if($statement->execute())
-	{
-		echo '<div class="alert alert-success">Password changed </div>';
+			if($statement->execute())
+			{
+				echo '<div class="alert alert-success">Password changed </div>';
+			}
+	}else{
+		echo '<div class="alert alert-danger">New password and confirm password not match   </div>';
+		}
+	}else{
+		echo '<div class="alert alert-danger">Please enter correct current password  </div>';
 	}
+
 }
+}
+
+
 
 elseif($_POST['action']=='edit_profile')
 {

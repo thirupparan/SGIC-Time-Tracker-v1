@@ -145,9 +145,17 @@ foreach($result as $row)
 					<form method="post" id="edit_password_form">
 						<label>Leave Password blank if you do not want to change</label>
 						<div class="form-group">
+							<label>Current Password <span>*</span></label>
+							<input type="password" name="user_current_password" id="user_current_password"
+								class="form-control" required/>
+						</div>
+
+
+						<div class="form-group">
 							<label>New Password</label>
 							<input type="password" name="user_new_password" id="user_new_password"
-								class="form-control" required/>
+								class="form-control" onKeyUp="checkPasswordStrength();" required/>
+								<div id="password-strength-status"></div>
 						</div>
 						<div class="form-group">
 							<label>Re-enter Password</label>
@@ -157,6 +165,7 @@ foreach($result as $row)
 						</div>
 						<div class="form-group">
 							<input type="hidden" name="action" value="change_password" />
+							<input type="hidden" name="password_strength" id="password_strength"/>
 							<input type="submit" name="change_password" id="change_password" value="Change password"
 								class="btn btn-info" />
 						</div>
@@ -179,6 +188,34 @@ foreach($result as $row)
 <?php include('./fragments/script.html'); ?>
 <script>
 //change password jquary
+
+
+function checkPasswordStrength() {
+		var number = /([0-9])/;
+		var alphabets = /([a-zA-Z])/;
+		var special_characters = /([~,!,@,#,$,%,^,&,*,-,_,+,=,?,>,<])/;
+		if($('#user_new_password').val().length<6) {
+		$('#password-strength-status').removeClass();
+		$('#password-strength-status').css({"background-color": "#E4DB11","border":"#BBB418 1px solid"});
+		$('#password-strength-status').html("Weak (should be atleast 6 characters.)");
+		$('#password_strength').val('weak');
+		} else {  	
+		if($('#user_new_password').val().match(number) && $('#user_new_password').val().match(alphabets) && $('#user_new_password').val().match(special_characters)) {            
+		$('#password-strength-status').removeClass();
+		$('#password-strength-status').css({"background-color": "#12CC1A","border":"#0FA015 1px solid"});
+		
+		$('#password-strength-status').html("Strong");
+		$('#password_strength').val('strong');
+		} else {
+		$('#password-strength-status').removeClass();
+		$('#password-strength-status').css({"background-color": "#FF6600","border":"#AA4502 1px solid"});
+		$('#password-strength-status').html("Medium (should include alphabets, numbers and special characters.)");
+		$('#password_strength').val('medium');
+		}}}
+
+		
+
+
 	$(document).ready(function () {
 		$('#edit_password_form').on('submit', function (event) {
 			event.preventDefault();
@@ -192,8 +229,9 @@ foreach($result as $row)
 				}
 			}
 
-			var form_data = $(this).serialize();
-			$('#change_password').attr('disabled', 'disabled');
+			if($('#password_strength').val()=='strong'){
+				var form_data = $(this).serialize();
+				$('#change_password').attr('disabled', 'disabled');
 			$('#user_re_enter_password').attr('required', false);
 			$.ajax({
 				url: "edit_profile.php",
@@ -201,15 +239,26 @@ foreach($result as $row)
 				data: form_data,
 				success: function (data) {
 					$('#change_password').attr('disabled', false);
+					$('#user_current_password').val('');
 					$('#user_new_password').val('');
 					$('#user_re_enter_password').val('');
 					$('#pwd_message').html(data);
+					$('#error_password').html('');
+					$('#password-strength-status').remove();
 					setTimeout(function () {
-							window.location.reload();	
+							$('#pwd_message').html('');	
 						}, 1500);
 				}
 			})
+				
+			}else{
+				$('#error_password').html('<label class="text-danger">Your password need to be strong In order to change password</label>');
+			}
+			
+			
 		});
+
+		
 	});
 		//edit profile jquary
 	$(document).ready(function () {
