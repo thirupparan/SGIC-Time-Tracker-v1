@@ -17,6 +17,16 @@ $timein=$row['time_in'] !=null ? $row['time_in']:'';
 $timeout=$row['time_out'] !=null ? $row['time_out']:'';
      }
 }
+
+$currentdate=strtotime(date("Y-m-d"));
+$gotDate= strtotime($_GET['date']);
+
+$disabledstatus="enabled";
+if($currentdate>$gotDate){
+     $disabledstatus="disabled";
+}
+
+echo $disabledstatus;
  ?>
 
  <!-- Content Section Starts here -->
@@ -76,7 +86,7 @@ $timeout=$row['time_out'] !=null ? $row['time_out']:'';
                <form>
                     <input type="hidden" id="hiddendate" value="<?php echo $_GET['date'];?>" />
                </form>
-               <div id="live_data"></div>
+               <div id="live_data" ></div>
           </div>
 		  
  
@@ -129,7 +139,7 @@ $('#formTimeOut').submit(function(event){
 
           function fetch_data() {
                $.ajax({
-                    url: "select-task.php?date=" + hdate,
+                    url: "select-task.php?uistate=<?php echo $disabledstatus;?>&date="+hdate,
                     method: "POST",
                     data: { date: hdate },
                     success: function (data) {
@@ -167,7 +177,7 @@ $('#formTimeOut').submit(function(event){
                     alert("Cant' allow , exceed 8 hrs");
                     return false;
                }
-               //alert("hello");
+             
                $.ajax({
                     url: "insert-task.php",
                     method: "POST",
@@ -180,10 +190,6 @@ $('#formTimeOut').submit(function(event){
                     }
                })
 
-               // console.log(project);
-               // console.log(title);
-               // console.log(duration);
-               // console.log(description);
           });
 
           function edit_data(id, text, column_name) {

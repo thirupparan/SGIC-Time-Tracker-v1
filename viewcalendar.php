@@ -185,10 +185,16 @@ $events = $req->fetchAll();
 				});
 			},
 			eventDrop: function(event, delta, revertFunc) { // si changement de position
-
-				edit(event);
-
-			},
+					if(delta._days<=-1){
+						alert("Can't drag to previous days");
+						revertFunc();
+					}else if(delta._days>1){
+						alert("Can't drag to more than one day");
+						revertFunc();
+					}else{
+						edit(event);
+					}
+				},
 			eventResize: function(event,dayDelta,minuteDelta,revertFunc) { // si changement de longueur
 
 				edit(event);
