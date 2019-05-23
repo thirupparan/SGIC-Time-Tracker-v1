@@ -145,10 +145,10 @@ include('function.php');
 						<label>Enter User Email</label>
 						<input type="email" name="user_email" id="user_email" class="form-control" required />
 					</div>
-					<div class="form-group">
+					<!-- <div class="form-group">
 						<label class="sr-only">Enter User Password</label>
-						<input type="hidden" name="user_password" id="user_password" class="form-control" value ="<?php echo randomPassword();?>"required />
-					</div>
+						<input type="hidden" name="user_password" id="user_password" class="form-control" value =""required />
+					</div> -->
 
 					<div class="form-group">
 						<label>Select User Role</label>
@@ -378,9 +378,9 @@ $.validator.addMethod(
 					$('#alert_action').fadeIn().html('<div class="alert alert-success">' + data + '</div>');
 					$('#action').attr('disabled', false);
 					userdataTable.ajax.reload();
-					setTimeout(() => {
-						$('#alert_action').html('');
-					}, 1500);
+					// setTimeout(() => {
+					// 	$('#alert_action').html('');
+					// }, 1500);
 				}
 			})
 		});

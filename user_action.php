@@ -8,9 +8,11 @@ $url = "http://localhost/SGIC-Time-Tracker-v1/login.php";
 //user_action.php
 
 include 'database_config_dashboard.php';
+include('function.php');
 
 if (isset($_POST['btn_action'])) {
     if ($_POST['btn_action'] == 'Add') {
+        $userpass=randomPassword();
         try {
             $query = "
 		INSERT INTO user (user_email, user_password, user_name, user_type, user_status)
@@ -20,7 +22,7 @@ if (isset($_POST['btn_action'])) {
             if ($statement->execute(
                 array(
                     ':user_email'    => $_POST["user_email"],
-                    ':user_password' => password_hash($_POST["user_password"], PASSWORD_DEFAULT),
+                    ':user_password' => password_hash($userpass, PASSWORD_DEFAULT),
                     ':user_name'     => $_POST["user_name"],
                     ':user_type'     => $_POST["user_type"],
                     ':user_status'   => 'Active',
@@ -66,7 +68,7 @@ if (isset($_POST['btn_action'])) {
                     $Body = ' Dear ' . $_POST["user_name"] . ',</br>
                                 <p> This is to inform you that SGIC TIME TRACKER SYSTEM login credentials information details  </p> </br>
                                 Your Login Email ID : "' . $_POST["user_email"] . '"</br>
-                                Your Login Password : "' . $_POST["user_password"] . '" </br>';
+                                Your Login Password : "' . $userpass . '" </br>';
         
                     $Body .= '<p>Here is your web site login link : </br>';
                     $Body .= '<a href ="' . $url . '">' . $url . '</a></P></br>';
@@ -118,16 +120,7 @@ if (isset($_POST['btn_action'])) {
 
     if ($_POST['btn_action'] == 'Edit') {
         try {
-            if ($_POST['user_password'] != '') {
-                $query = "
-			UPDATE user SET
-			user_name = TRIM(:user_name),
-			user_email =TRIM(:user_email),
-			user_password ='" . password_hash(trim($_POST["user_password"]), PASSWORD_DEFAULT) . "',
-			user_type =:user_type
-			WHERE user_id =:user_id
-			";
-            } else {
+           
                 $query = "
 			UPDATE user SET
 			user_name =TRIM(:user_name),
@@ -135,7 +128,7 @@ if (isset($_POST['btn_action'])) {
 			user_type =:user_type
 			WHERE user_id =:user_id
 			";
-            }
+            
             $statement = $connect->prepare($query);
             if ($statement->execute(
                 array(
