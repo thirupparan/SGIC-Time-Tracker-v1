@@ -56,7 +56,7 @@ if(isset($_POST['btn_action']))
 	if($_POST['btn_action'] == 'Edit')
 	{
 		$role_name=trim($_POST["role_name"]);
-		if(ifNotexists($connect,$role_name)){
+		if(ifNotexists($connect,"user_role","role_name",$role_name)){
 		$query = "
 		UPDATE user_role set role_name = :role_name
 		WHERE role_id = :role_id";

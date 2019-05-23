@@ -160,7 +160,17 @@ var validatorCompany =$('#company_form').validate({
 			},
 			email:{
 				required:true,
-				email:true
+				email:true,
+				remote: {
+					url: "validate.php",
+					type: "post",
+					data: {
+						param:'email',
+						value: function(){
+							return $('#email').val();
+						}
+					}
+				}
 			},
 			address:{
 				required:true,
@@ -183,7 +193,8 @@ var validatorCompany =$('#company_form').validate({
 			},
 			email:{
 				required:"please Enter Email Address",
-				email:"please provide valid email address"
+				email:"please provide valid email address",
+				remote:"Already exist"
 			},
 			address:{
 				required:"please enter Address",
@@ -279,12 +290,22 @@ var validatorCompany =$('#company_form').validate({
 					url: "company_action.php",
 					method: "POST",
 					data: { company_id: company_id, status: status, btn_action: btn_action },
+					dataType: "json",
 					success: function (data) {
-						$('#alert_action').fadeIn().html('<div class="alert alert-info">' + data + '</div>');
+						if (data.type == 'success'){
+							$('#alert_action').fadeIn().html('<div class="alert alert-info">' + data.msg + '</div>');
 						companydataTable.ajax.reload();
 						setTimeout(() => {
 						$('#alert_action').html('');
-					}, 1500);
+						}, 1500);
+						}if(data.type=='err'){
+							$('#alert_action').fadeIn().html('<div class="alert alert-danger">'+data.msg+'</div>');
+							companydataTable.ajax.reload();
+							setTimeout(() => {
+							$('#alert_action').html('');
+							}, 1500);
+
+						}
 					}
 				})
 			}

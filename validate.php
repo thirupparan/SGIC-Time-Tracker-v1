@@ -7,5 +7,7 @@ if (isset($_POST['param'])) {
   echo (json_encode(ifNotexists($connect,"user_role","role_name", $_POST['value'])));
  }elseif($_POST['param'] == 'company_name'){
     echo (json_encode(ifNotexists($connect,"out_source_company","company_name", $_POST['value'])));
- }
+ }elseif($_POST['param'] == 'email'){
+   echo (json_encode(ifNotexists($connect,"out_source_company","email", $_POST['value'])));
+}
 }
