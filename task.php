@@ -30,6 +30,7 @@ echo $disabledstatus;
  ?>
 
  <!-- Content Section Starts here -->
+ <link rel="stylesheet" href="css/bootstrap-clockpicker.min.css">
                 <div id="content">
 
                     <header>
@@ -43,8 +44,15 @@ echo $disabledstatus;
                             <form id="formTimeIn">
                                 <div class="form-group text-center">
                                     <label class="sr-only">Time In</label>
-                                    <label>Time In</label>
-                                    <input type="time" class="form-control" id="timeIn" value="<?php echo $timein; ?>" name="timeIn" placeholder="hh:mm:ss">
+                                    <label for=>Time In</label>
+
+                                    <div class="input-group clockpicker">
+                                        <input type="text" class="form-control" id="timein" value="<?php echo $timein; ?>" name="timein" readonly>
+                                        <span class="input-group-addon">
+                                             <span class="glyphicon glyphicon-time"></span>
+                                        </span>
+                                   </div>
+                                  
                                     <input type="hidden" name="action" value="time_in"/>
                                     <br/>
                                     <input type="submit" id="btntimeIn" class="btn btn-primary"  value="I'm in">
@@ -52,6 +60,11 @@ echo $disabledstatus;
                                 </form>
                             </div>
 
+                            <div class="col-md-4 text-center">
+                                   <h4><?php echo $_GET['date'];?></h4>
+                                   <h3>Working Hours</h3>
+                                   <h4>-hrs --mins</h4>
+                                   </div>
                    
 
                             <div class="col-md-4">
@@ -59,7 +72,13 @@ echo $disabledstatus;
                                     <div class="form-group text-center">
                                         <label class="sr-only">Time Out</label>
                                         <label>Time out</label>
-                                        <input type="time" class="form-control" id="timeOut" value="<?php echo $timeout; ?>" name="timeOut" placeholder="hh:mm:ss">
+                                        <div class="input-group clockpicker">
+                                        <input type="text" class="form-control" id="timeout" value="<?php echo $timeout; ?>" name="timeout" readonly>
+                                        <span class="input-group-addon">
+                                             <span class="glyphicon glyphicon-time"></span>
+                                        </span>
+                                   </div>
+                                      
                                         <input type="hidden" name="action" value="time_out"/>
                                         <br/>
                                         <input type="submit" id="btntimeOut" class="btn btn-primary" value="I'm out">
@@ -67,11 +86,7 @@ echo $disabledstatus;
                                     </form>
                                 </div>
 
-                                <div class="col-md-4 text-center">
-                                   <h4><?php echo $_GET['date'];?></h4>
-                                   <h3>Working Hours</h3>
-                                   <h4>-hrs --mins</h4>
-                                   </div>
+                               
 
                         </div>
 
@@ -92,6 +107,14 @@ echo $disabledstatus;
  
 
 <?php include('./fragments/script.html')?>
+<script src="js/bootstrap-clockpicker.min.js"></script>
+<script type="text/javascript">
+$('.clockpicker').clockpicker({
+    placement: 'bottom',
+    align: 'left',
+    donetext: 'Done'
+});
+</script>
 
 <script>
      $(document).ready(function () {
@@ -107,13 +130,13 @@ echo $disabledstatus;
 
 $('#formTimeIn').submit(function(event){
      event.preventDefault();
-     var timein=$('#timeIn').val();
-     var action=$(this).find('input[type="hidden"]')[0].value;
-     
+    var formdata= $(this).serialize();
+     var serializedata=formdata+ "&date="+hdate;
+    
      $.ajax({
                     url: "time-insert.php",
                     method: "POST",
-                    data:  {action:action,timein:timein,date:hdate},
+                    data:  serializedata ,
                     success: function (data) {
                         alert(data);
                     }
@@ -123,13 +146,14 @@ $('#formTimeIn').submit(function(event){
 
 $('#formTimeOut').submit(function(event){
      event.preventDefault();
-     var timeout=$('#timeOut').val();
-     var action=$(this).find('input[type="hidden"]')[0].value;
+     var serializedata=formdata+ "&date="+hdate;
+     
+     
     
      $.ajax({
                     url: "time-insert.php",
                     method: "POST",
-                    data:  {action:action,timeout:timeout,date:hdate},
+                    data:  serializedata ,
                     success: function (data) {
                         alert(data);
                     }
