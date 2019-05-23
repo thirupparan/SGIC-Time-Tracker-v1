@@ -15,7 +15,7 @@ if(isset($_POST['btn_action']))
 		$role_name=trim($_POST["role_name"]);
 		
 			
-		if(ifNotexists($connect,$role_name)){
+		if(ifNotexists($connect,"user_role","role_name",$role_name)){
 			
 		
 		$query = "

@@ -2,37 +2,30 @@
 
 //category_action.php
 include('database_config_dashboard.php');
-include('query_execute.inc.php');
+include('includes/query_execute.inc.php');
+require_once 'validations/existValidation.php';
 
 if(isset($_POST['btn_action']))
 {
 	if($_POST['btn_action'] == 'Add')
 	{
-		try{
+		$company_name =	$_POST["company_name"];
+		if(ifNotexists($connect,"out_source_company","company_name",$company_name)){
+		
 		$query = "
 		INSERT INTO out_source_company (company_name,contact_number,email,address,company_status) 
 		VALUES (TRIM(:company_name),TRIM(:contact_number),TRIM(:email),TRIM(:address),:company_status)
 		";
-		$statement = $connect->prepare($query);
-		if($statement->execute(
-			array(
+		execute_query("Company details inserted","unable to insert Company details",$connect,$query,array(
 				':company_name'	=>	$_POST["company_name"],
 				':contact_number'	=>	$_POST["contact_number"],
 				':email'	=>	$_POST["email"],
 				':address'	=>	$_POST["address"],
 				':company_status'	=>	'Active'
-			)
-		)){
-			if($statement->rowCount()>0){
-				echo 'Company Details Added';
-			}else{
-			echo 'error occured please check';
-			}
+		));
+		}else{
+			echo json_encode(printJsonMsg("Company Name Already exist",'err'));
 		}
-		}catch(PDOException $e)
-		{
-	echo 'Error occured : ' . $e->getMessage();
-	}
 		
 	}
 	

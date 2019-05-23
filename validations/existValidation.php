@@ -1,14 +1,14 @@
 <?php
-function ifNotexists($connect,$role_name){
-	$sltquery="SELECT count(role_name) as countrole FROM user_role WHERE role_name = TRIM(:role_name)";
+function ifNotexists($connect,$table_name,$column_name,$value){
+	$sltquery="SELECT count({$column_name}) as countnum FROM {$table_name} WHERE {$column_name} = TRIM(:value)";
 	$statement = $connect->prepare($sltquery);
 		$statement->execute(
 			array(
-				':role_name'	=>	$role_name
+				':value'	=>	$value
 			)
 		);
 		$result = $statement->fetch(PDO::FETCH_ASSOC);
-		if($result["countrole"]>0){
+		if($result["countnum"]>0){
 			
 			return false;
 		}else{
