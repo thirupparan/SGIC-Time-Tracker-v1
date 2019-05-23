@@ -144,7 +144,6 @@ $.validator.addMethod(
 		event.preventDefault();
 		$('#action').attr('disabled','disabled');
 		var form_data = $(this).serialize();
-		console.log(form_data);
 		$.ajax({
 			url:"userrole_action.php",
 			method:"POST",
@@ -152,7 +151,6 @@ $.validator.addMethod(
 			dataType:"json",
 			success:function(data)
 			{
-				console.log(data);
 				if(data.type=='success'){
 					$('#userrole_form')[0].reset();
 					$('#userroleModal').modal('hide');
