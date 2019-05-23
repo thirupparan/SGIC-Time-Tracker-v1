@@ -30,7 +30,7 @@ if($currentdate>$gotDate){
 
 
 
-echo $disabledstatus;
+//echo $disabledstatus;
  ?>
 
  <!-- Content Section Starts here -->
@@ -59,7 +59,7 @@ echo $disabledstatus;
                                   
                                     <input type="hidden" name="action" value="time_in"/>
                                     <br/>
-                                    <input type="submit" id="btntimeIn" class="btn btn-primary"  value="I'm in">
+                                    <input type="submit" id="btntimeIn" class="btn btn-primary" <?php if($disabledstatus=='disabled'){echo "disabled";}?> value="I'm in">
                                 </div>
                                 </form>
                             </div>
