@@ -18,6 +18,8 @@ $timeout=$row['time_out'] !=null ? $row['time_out']:'';
      }
 }
 
+
+
 $currentdate=strtotime(date("Y-m-d"));
 $gotDate= strtotime($_GET['date']);
 
@@ -25,6 +27,8 @@ $disabledstatus="enabled";
 if($currentdate>$gotDate){
      $disabledstatus="disabled";
 }
+
+
 
 echo $disabledstatus;
  ?>
@@ -81,7 +85,7 @@ echo $disabledstatus;
                                       
                                         <input type="hidden" name="action" value="time_out"/>
                                         <br/>
-                                        <input type="submit" id="btntimeOut" class="btn btn-primary" value="I'm out">
+                                        <input type="submit" id="btntimeOut" class="btn btn-primary" <?php  if($timein ==''){echo 'disabled'; }?> value="I'm out">
                                     </div>
                                     </form>
                                 </div>
@@ -118,13 +122,7 @@ $('.clockpicker').clockpicker({
 
 <script>
      $(document).ready(function () {
-          if(isNaN($('#timeIn').val())){
-               
-               $("#btntimeOut").attr("disabled", false);
-          }else{
-               
-               $("#btntimeOut").attr("disabled", true);
-          }
+       
           var hdate = $('#hiddendate').val();
 
 
@@ -137,8 +135,10 @@ $('#formTimeIn').submit(function(event){
                     url: "time-insert.php",
                     method: "POST",
                     data:  serializedata ,
+                    dataType:"json",
                     success: function (data) {
-                        alert(data);
+                        alert(data.msg);
+                        window.location.reload();
                     }
                });
 
@@ -146,6 +146,7 @@ $('#formTimeIn').submit(function(event){
 
 $('#formTimeOut').submit(function(event){
      event.preventDefault();
+     var formdata= $(this).serialize();
      var serializedata=formdata+ "&date="+hdate;
      
      
@@ -154,8 +155,10 @@ $('#formTimeOut').submit(function(event){
                     url: "time-insert.php",
                     method: "POST",
                     data:  serializedata ,
+                    dataType:"json",
                     success: function (data) {
-                        alert(data);
+                        alert(data.msg);
+                        window.location.reload();
                     }
                });
 

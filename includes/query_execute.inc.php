@@ -1,6 +1,7 @@
 <?php
 
 	require_once 'message.inc.php';
+
     function execute_query($success_msg,$err_msg,$connect,$query,$array_param){
 		$msg=null;
 	try{
@@ -29,5 +30,10 @@
 	}
 	echo json_encode($msg);
     }
-    
+		
+		function getResult($connect,$query){
+			$statement = $connect->prepare($query);
+		$statement->execute();
+		return $result = $statement->fetch(PDO::FETCH_ASSOC);
+		}
     ?>
