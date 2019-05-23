@@ -134,6 +134,7 @@ function print_duration($timeMins){
  }  
  else  
  {  
+     if($_GET['uistate']=="enabled"){
       $output .= '
       
       <tr>  
@@ -152,7 +153,7 @@ function print_duration($timeMins){
            <td id="description" contenteditable></td>  
            <td><button type="button" name="btn_add" id="btn_add" class="btn btn-xs btn-success">+</button></td>  
       </tr>  ';
-      
+     }
  }  
 
 

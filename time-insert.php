@@ -1,36 +1,61 @@
 <?php  
 session_start();
-include('database_mysqli_assign_company.php'); 
+
+include('database_config_dashboard.php'); 
+include('includes/query_execute.inc.php');
+require_once 'includes/message.inc.php';
 
 if($_POST["action"]=='time_in'){
 
 
 $sql="INSERT INTO attendance (time_in,time_out,user_id,date)
-SELECT * FROM (SELECT '".$_POST["timein"]."','00:00','".$_SESSION["user_id"]."','".$_POST["date"]."') AS tmp
+SELECT * FROM (SELECT :timein ,'00:00',:userid,:date) AS tmp
 WHERE NOT EXISTS (
-    SELECT date FROM attendance WHERE date = '".$_POST["date"]."'
+    SELECT date FROM attendance WHERE date = :dateex
 ) LIMIT 1";
 
-execute_query($connect,$sql);
+
+execute_query("Successfully Updated Time In","Cannot Allowed to change ",$connect,$sql,array(
+    ':timein'=>$_POST["timein"],
+    ':userid'=>$_SESSION["user_id"],
+    ':date'=>$_POST["date"],
+    ':dateex'=>$_POST["date"]
+));
 
 }else if($_POST["action"]=='time_out'){
+    $timeout=strtotime($_POST["timeout"]);
+    $timein=strtotime(getTimeInbyDate($connect,$_SESSION["user_id"],$_POST["date"]));
+$timediff=$timeout-$timein;
+
+    if($timediff>0){
+        $sql="UPDATE attendance SET time_out = :timeout WHERE attendance.user_id=:userid AND attendance.date = :date";
+       
+
+        execute_query("Successfully Updated Time Out","Cannot Allowed to change ",$connect,$sql,array(
+            ':timeout'=>$_POST["timeout"],
+            ':userid'=>$_SESSION["user_id"],
+            ':date'=>$_POST["date"],
+            
+        ));
+    }else{
+       
+        echo json_encode(printJsonMsg('Time out is Less than Time in ','err'));
+        
+    }
     
-$sql="UPDATE attendance SET time_out = '".$_POST["timeout"]."' WHERE attendance.user_id='".$_SESSION["user_id"]."' AND attendance.date = '".$_POST["date"]."'";
 
-execute_query($connect,$sql);
 }
 
-function execute_query($connect,$sql){
-     if(mysqli_query($connect, $sql))  
-     {  
-           if(mysqli_affected_rows($connect)>0){
-               echo 'sucess';
-           }else if(mysqli_affected_rows($connect)==0){
-               echo 'Action already exist';
-           }else{
-               echo 'Error'; 
-           }
-     }  
+
+function getTimeInbyDate($connect,$userid,$date){
+
+    $sqlGetTimeIn="SELECT `time_in` FROM `attendance` WHERE attendance.user_id='{$userid}' AND attendance.date = '{$date}'";
+    $result=getResult($connect,$sqlGetTimeIn);
+    return $result['time_in'];
+		
+
+       
 }
+
 ?> 
 
