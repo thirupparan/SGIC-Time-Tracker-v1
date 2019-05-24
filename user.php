@@ -378,9 +378,9 @@ $.validator.addMethod(
 					$('#alert_action').fadeIn().html('<div class="alert alert-success">' + data + '</div>');
 					$('#action').attr('disabled', false);
 					userdataTable.ajax.reload();
-					// setTimeout(() => {
-					// 	$('#alert_action').html('');
-					// }, 1500);
+					setTimeout(() => {
+						$('#alert_action').html('');
+					}, 1500);
 				}
 			})
 		});

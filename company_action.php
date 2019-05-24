@@ -51,8 +51,8 @@ if (isset($_POST['btn_action'])) {
 
  if ($_POST['btn_action'] == 'Edit') {
   $company_name = trim($_POST["company_name"]);
-  if (ifNotexists($connect, "out_source_company", "company_name", $company_name)) {
-   if (ifNotexists($connect, "out_source_company", "email", $company_name)) {
+  if (ifNotexistsLock($connect, "out_source_company", "company_name", $_POST["company_name"], "company_id", $_POST["company_id"])) {
+   if (ifNotexistsLock($connect, "out_source_company", "email", $_POST["email"], "company_id", $_POST["company_id"])) {
     $query = "
 					UPDATE out_source_company set
 					company_name = TRIM(:company_name),
