@@ -2,14 +2,18 @@
 //profile.php
 include('./fragments/header.php');
 include('database_mysqli_assign_company.php');
+include('function.php');
 ?>
 
 
 <div class="row">
 
-	<!-- profile panel starts here -->
-	<div class="col-md-6 col-sm-12 col-xs-12">
 
+	<!-- profile panel starts here -->
+	
+
+	
+	<div class="col-md-12 col-sm-12 col-xs-12 text-center">					
 	<?php
 	
   $procedure = "  
@@ -74,14 +78,13 @@ include('database_mysqli_assign_company.php');
 				 }
 				}?>
 
+
+
 	</div>
 	<!-- profile panel ends here -->
 
 
-	<div class="col-md-6 col-sm-12 col-xs-12">
-
-
-	</div>
+	
 
 </div>
 

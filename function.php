@@ -41,3 +41,4 @@ function randomPassword() {
 }
 
 //echo randomPassword();
+?>

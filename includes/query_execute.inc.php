@@ -36,4 +36,10 @@
 		$statement->execute();
 		return $result = $statement->fetch(PDO::FETCH_ASSOC);
 		}
+
+		function getAll($connect,$query){
+		
+			return $connect->query($query);
+		
+		}
     ?>

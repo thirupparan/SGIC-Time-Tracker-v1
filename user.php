@@ -30,12 +30,7 @@ include('function.php');
 					<div class="col-sm-12 table-responsive">
 					<span id="alert_action"></span>
 					<?php
-// if(isset($_GET["newuser_added"])){
-//     if($_GET["newuser_added"]=="success"){
-//         echo '<div class="alert alert-success">new user added </div>';
-//     }
-// }
-// ?>
+ ?>
 						<table id="user_data" class="table table-bordered table-striped">
 							<thead>
 								<tr>
@@ -58,75 +53,7 @@ include('function.php');
 	</div>
 </div>
  
-<div id="companyModal" class="modal fade">
-	<div class="modal-dialog modal-lg">
-	
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Manage Recruitment</h4>
-			</div>
-			<div class="modal-body">
 
-				<div class="panel panel-default">
-					<div class="panel-body">
-						<form id="company_form">
-							<div class="row">
-								<div class="col-md-5">
-									<div class="form-group">
-										<label for="company_name">Select Company</label>
-										<select name="company_name" id="company_name" class="form-control" required>
-											<option value="">Select Company</option>
-											<?php echo fill_company_list($connect); ?>
-											<!-- <option value="Other">Other</option> -->
-										</select>
-									</div>
-
-									<div class="form-group">
-										<label>Work Role</label>
-										<input type="text" name="work_role" id="work_role" class="form-control"
-											required />
-									</div>
-								</div>
-
-								<div class="col-md-5">
-									<div class="form-group">
-										<label for="recruited_date">Recruited Date</label>
-										<input type="date" name="recruited_date" id="recruited_date"
-											class="form-control" required />
-									</div>
-
-									<div class="form-group">
-										<label>Contract Period</label>
-										<input type="text" name="Contract_Period" id="Contract_Period"
-											class="form-control" required />
-									</div>
-								</div>
-
-								<div class="col-md-2">
-									<br /><br/><br/><br/><br/>
-									<input type="hidden" name="action_company" id="action_company" />
-									<input type="hidden" name="user_company_id" id="user_company_id" />
-									<input type="hidden" name="user_id_company" id="user_id_company" />
-									<input type="submit" name="btn_action_company" id="btn_action_company"
-										class="btn btn-info" value="Add" />
-								</div>
-							</div>
-						</form>
-						<span id="alert_company_action"></span>
-					</div>
-				</div>
-
-				<div id="result">
-				</div>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
 
 <div id="userModal" class="modal fade">
 	<div class="modal-dialog">
@@ -145,10 +72,7 @@ include('function.php');
 						<label>Enter User Email</label>
 						<input type="email" name="user_email" id="user_email" class="form-control" required />
 					</div>
-					<!-- <div class="form-group">
-						<label class="sr-only">Enter User Password</label>
-						<input type="hidden" name="user_password" id="user_password" class="form-control" value =""required />
-					</div> -->
+					
 
 					<div class="form-group">
 						<label>Select User Role</label>
@@ -179,110 +103,7 @@ include('function.php');
 		// getting user id
 		var userid = null;
 
-		function fetchCompany() {
-			var btn_action = 'fetch_single';
-			var action = "select";
-			$.ajax({
-				url: "company_assign_select.php",
-				method: "POST",
-				data: { action: action, user_id: userid },
-				success: function (data) {
-					$('#recruited_date').val('');
-					$('#company_name').val('');
-					$('#companyModal .modal-title').html('Manage Recruitment');
-					$('#work_role').val('');
-					$('#Contract_Period').val('');
-					$('#user_id_company').val(userid);
-					$('#action_company').val("Add");
-					$('#btn_action_company').val("Add");
-					$('#result').html(data);
-				
-				}
-			});
-		}
-
-
-		$(document).on('click', '.company', function () {
-			userid = $(this).attr("id");
-			fetchCompany();
-		});
-
 		
-
-		$(document).on('submit', '#company_form', function (event) {
-			event.preventDefault();
-			$('#btn_action_company').attr('disabled', 'disabled');
-			var form_data = $(this).serialize();
-			$.ajax({
-				url: "company_assign_action.php",
-				method: "POST",
-				data: form_data,
-				success: function (data) {
-					$('#alert_company_action').html(data);
-					fetchCompany(userid);
-					setTimeout(() => {
-						$('#alert_company_action').html('');
-					}, 1500);
-					$('#btn_action_company').attr('disabled', false);
-				}
-			});
-		});
-
-
-		//assign company update
-		$(document).on('click', '.update_company', function () {
-			var id = $(this).attr("id");
-			$('#action_company').val("Edit");
-			$('#btn_action_company').val("Edit");
-			$.ajax({
-				url: "company_assign_fetch.php",
-				method: "POST",
-				data: { user_company_id: id },
-				dataType: "json",
-				success: function (data) {
-					$('#company_name').val(data.company_id);
-					$('#recruited_date').val(data.recruited_date);
-					$('#user_company_id').val(data.user_company_id);
-					$('#work_role').val(data.work_role);
-					$('#Contract_Period').val(data.contract_period);
-				}
-			})
-		});
-
-		//assign company delete
-		$(document).on('click', '.delete_company', function () {
-			var id = $(this).attr("id");
-			//alert(id);
-			if (confirm("Are you sure you want to remove this data?")) {
-				var action = "Delete";
-				$.ajax({
-					url: "company_assign_action.php",
-					method: "POST",
-					data: { user_company_id: id, action_company: action },
-					success: function (data) {
-						fetchCompany();
-						$('#alert_company_action').html(data);
-						setTimeout(() => {
-							$('#alert_company_action').html('');
-						}, 1500);
-					}
-				})
-			}
-			else {
-				return false;
-			}
-		});
-
-		$(document).on('click', '.company', function () {
-			var id = $(this).attr("id");
-			$('#companyModal').modal('show');
-		});
-
-	
-
-
-	
-
 		$('#add_button').click(function () {
 			$('#user_form')[0].reset();
 			$('.modal-title').html("<i class='fa fa-plus'></i> Add User");

@@ -68,7 +68,7 @@ foreach($result as $row)
 	$sub_array[] = $row['role_name'];
 	$sub_array[] = $updatebutton;
 	$sub_array[] = $statusCheck;
-	$sub_array[] = '<button type="button" name="company" id="'.$row["user_id"].'" class="btn btn-primary btn-xs company">Manage</button>';
+	$sub_array[] = "<a href='recruitment-admin?userid={$row["user_id"]}'  class='btn btn-primary btn-xs'>Manage</a>";
 	$data[] = $sub_array;
 }
 
