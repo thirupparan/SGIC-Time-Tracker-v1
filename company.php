@@ -97,15 +97,26 @@ if (!isset($_SESSION["type"])) {
 	$(document).ready(function () {
 		$.validator.setDefaults({
 		errorClass:'help-block',
+		focusCleanup: true,
 		highlight:function(element){
-			$(element)
-			.closest('.form-group')
-			.addClass('has-error');
+		$(element)
+		.parent()
+		.closest('.form-group')
+		//.removeClass('has-success')
+		.addClass('has-error');
+		// $(element.form).find("label[for=" + element.id + "]")
+		// 	.addClass('has-error');
 		},
 		unhighlight:function(element){
 			$(element)
+			.parent()
 			.closest('.form-group')
 			.removeClass('has-error');
+			//.addClass('has-success');
+			// $(element.form).find("label[for=" + element.id + "]")
+			// .removeClass('has-error');
+			//window.location reload();
+			//validatorCompany.resetForm();
 		}
 	});
 
@@ -146,6 +157,12 @@ var validatorCompany =$('#company_form').validate({
 					type: "post",
 					data: {
 						param:'company_name',
+						action:function(){
+							return $('#btn_action').val();
+						},
+						actionvalue:function(){
+							return $('#company_id').val();
+						},
 						value: function(){
 							return $('#company_name').val();
 						}
@@ -166,6 +183,12 @@ var validatorCompany =$('#company_form').validate({
 					type: "post",
 					data: {
 						param:'email',
+						action:function(){
+							return $('#btn_action').val();
+						},
+						actionvalue:function(){
+							return $('#company_id').val();
+						},
 						value: function(){
 							return $('#email').val();
 						}
@@ -238,6 +261,7 @@ var validatorCompany =$('#company_form').validate({
 		$(document).on('click', '.update', function () {
 			var company_id = $(this).attr("id");
 			var btn_action = 'fetch_single';
+			validatorCompany.resetForm();
 			$.ajax({
 				url: "company_action.php",
 				method: "POST",
