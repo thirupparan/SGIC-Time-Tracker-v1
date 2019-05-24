@@ -166,7 +166,7 @@ $('#formTimeOut').submit(function(event){
 
           function fetch_data() {
                $.ajax({
-                    url: "select-task.php?uistate=<?php echo $disabledstatus;?>&date="+hdate,
+                    url: "task-select.php?uistate=<?php echo $disabledstatus;?>&date="+hdate,
                     method: "POST",
                     data: { date: hdate },
                     success: function (data) {
@@ -200,13 +200,14 @@ $('#formTimeOut').submit(function(event){
                     return false;
                }
 
+              
                if(Number(totaltime)+Number(duration)>480){
                     alert("Cant' allow , exceed 8 hrs");
                     return false;
                }
              
                $.ajax({
-                    url: "insert-task.php",
+                    url: "task-insert.php",
                     method: "POST",
                     data: { project:project,taskname: taskname, duration: duration, description: description, date: hdate },
                     dataType: "text",
@@ -220,8 +221,10 @@ $('#formTimeOut').submit(function(event){
           });
 
           function edit_data(id, text, column_name) {
+               
+
                $.ajax({
-                    url: "edit-task.php",
+                    url: "task-edit.php",
                     method: "POST",
                     data: { id: id, text: text, column_name: column_name },
                     dataType: "text",
@@ -231,6 +234,7 @@ $('#formTimeOut').submit(function(event){
                     }
                });
           }
+
           $(document).on('change', '.projects', function () {
                var id = $(this).data("id0");
                var project_id = $(this).val();
@@ -245,6 +249,12 @@ $('#formTimeOut').submit(function(event){
           $(document).on('change', '.duration', function () {
                var id = $(this).data("id2");
                var duration = $(this).val();
+               var totaltime=$('#label-time').text();
+               if(Number(totaltime)+Number(duration)>480){
+                    alert("Cant' allow , exceed 8 hrs");
+                    fetch_data();
+                    return false;
+               }
                edit_data(id, duration, "duration");
               //alert("id :"+id +"duration:"+duration);
           });
@@ -258,7 +268,7 @@ $('#formTimeOut').submit(function(event){
                var id = $(this).data("id3");
                if (confirm("Are you sure you want to delete this?")) {
                     $.ajax({
-                         url: "delete-task.php",
+                         url: "task-delete.php",
                          method: "POST",
                          data: { id: id },
                          dataType: "text",
