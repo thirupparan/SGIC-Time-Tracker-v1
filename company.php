@@ -97,7 +97,6 @@ if (!isset($_SESSION["type"])) {
 	$(document).ready(function () {
 		$.validator.setDefaults({
 		errorClass:'help-block',
-		focusCleanup: true,
 		highlight:function(element){
 		$(element)
 		.parent()
