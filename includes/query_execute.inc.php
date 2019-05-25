@@ -37,6 +37,12 @@
 		return $result = $statement->fetch(PDO::FETCH_ASSOC);
 		}
 
+		function getResultwihParam($connect,$query,$param){
+			$statement = $connect->prepare($query);
+		$statement->execute($param);
+		return $result = $statement->fetch(PDO::FETCH_ASSOC);
+		}
+
 		function getAll($connect,$query){
 		
 			return $connect->query($query);
