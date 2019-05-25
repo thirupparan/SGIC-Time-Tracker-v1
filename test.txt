@@ -1,0 +1,71 @@
+//assign company delete
+		$(document).on('click', '.delete_company', function () {
+			var id = $(this).attr("id");
+			//alert(id);
+			if (confirm("Are you sure you want to remove this data?")) {
+				var action = "Delete";
+				$.ajax({
+					url: "company_assign_action.php",
+					method: "POST",
+					data: { user_company_id: id, action_company: action },
+					success: function (data) {
+						fetchCompany();
+						$('#alert_company_action').html(data);
+						setTimeout(() => {
+							$('#alert_company_action').html('');
+						}, 1500);
+					}
+				})
+			}
+			else {
+				return false;
+			}
+		});
+
+			//assign company update
+			$(document).on('click', '.update_company', function () {
+			var id = $(this).attr("id");
+			$('#action_company').val("Edit");
+			$('#btn_action_company').val("Edit");
+			$.ajax({
+				url: "company_assign_fetch.php",
+				method: "POST",
+				data: { user_company_id: id },
+				dataType: "json",
+				success: function (data) {
+					$('#company_name').val(data.company_id);
+					$('#recruited_date').val(data.recruited_date);
+					$('#user_company_id').val(data.user_company_id);
+					$('#work_role').val(data.work_role);
+					$('#Contract_Period').val(data.contract_period);
+				}
+			})
+		});
+
+		function fetchCompany() {
+			var btn_action = 'fetch_single';
+			var action = "select";
+			$.ajax({
+				url: "company_assign_select.php",
+				method: "POST",
+				data: { action: action, user_id: userid },
+				success: function (data) {
+					$('#recruited_date').val('');
+					$('#company_name').val('');
+					$('#companyModal .modal-title').html('Manage Recruitment');
+					$('#work_role').val('');
+					$('#Contract_Period').val('');
+					$('#user_id_company').val(userid);
+					$('#action_company').val("Add");
+					$('#btn_action_company').val("Add");
+					$('#result').html(data);
+				
+				}
+			});
+		}
+
+
+		$(document).on('click', '.company', function () {
+			userid = $(this).attr("id");
+			fetchCompany();
+		});
