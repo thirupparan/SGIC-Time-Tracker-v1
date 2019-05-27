@@ -4,7 +4,7 @@ session_start();
 include('database_config_dashboard.php');
 if(!empty($_FILES))
 {
-	$allowed_ext =array("jpg","png");
+	$allowed_ext =array("jpg","jpeg","png","PNG","JPG","JPEG");
 
 	// there was a problem arised when the explode function passed
 	$explode_ext=explode('.', $_FILES['photo']['name']);

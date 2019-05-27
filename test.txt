@@ -42,27 +42,7 @@
 			})
 		});
 
-		function fetchCompany() {
-			var btn_action = 'fetch_single';
-			var action = "select";
-			$.ajax({
-				url: "company_assign_select.php",
-				method: "POST",
-				data: { action: action, user_id: userid },
-				success: function (data) {
-					$('#recruited_date').val('');
-					$('#company_name').val('');
-					$('#companyModal .modal-title').html('Manage Recruitment');
-					$('#work_role').val('');
-					$('#Contract_Period').val('');
-					$('#user_id_company').val(userid);
-					$('#action_company').val("Add");
-					$('#btn_action_company').val("Add");
-					$('#result').html(data);
-				
-				}
-			});
-		}
+		
 
 
 		$(document).on('click', '.company', function () {
