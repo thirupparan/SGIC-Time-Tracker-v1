@@ -8,8 +8,9 @@ require_once 'validations/existValidation.php';
 if (isset($_POST['btn_action'])) {
  if ($_POST['btn_action'] == 'Add') {
   $company_name = trim($_POST["company_name"]);
+  $company_Email = trim($_POST["email"]);
   if (ifNotexists($connect, "out_source_company", "company_name", $company_name)) {
-   if (ifNotexists($connect, "out_source_company", "email", $company_name)) {
+   if (ifNotexists($connect, "out_source_company", "email", $company_Email)) {
     $query = "
 		INSERT INTO out_source_company (company_name,contact_number,email,address,company_status)
 		VALUES (TRIM(:company_name),TRIM(:contact_number),TRIM(:email),TRIM(:address),:company_status)

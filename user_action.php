@@ -4,15 +4,21 @@
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 //$userEmail="'.$_POST["user_email"].'";
-$url = "http://localhost/SGIC-Time-Tracker-v1/login.php";
+$urlglobal = "http://localhost/SGIC-Time-Tracker-v1/login.php";
 //user_action.php
 
 include 'database_config_dashboard.php';
 include('function.php');
+include_once('includes/query_execute.inc.php');
+require_once 'validations/existValidation.php';
 
 if (isset($_POST['btn_action'])) {
     if ($_POST['btn_action'] == 'Add') {
-        $userpass=randomPassword();
+        $user_name = trim($_POST["user_name"]);
+        $user_email=trim($_POST["user_email"]);
+        if (ifNotexists($connect, "user", "user_name", $user_name)) {
+            if (ifNotexists($connect, "user", "user_email", $user_email)) {
+        $userpassrnd=randomPassword();
         try {
             $query = "
 		INSERT INTO user (user_email, user_password, user_name, user_type, user_status)
@@ -29,7 +35,6 @@ if (isset($_POST['btn_action'])) {
                 )
             )) {
                 if ($statement->rowCount() > 0) {
-
                     //echo $query;
                     if ($connect->lastInsertId() > 0) {
                         $query = "
@@ -44,59 +49,34 @@ if (isset($_POST['btn_action'])) {
 
                             )
                         )) {
-                            //email function start
-        // Load Composer's autoloader
-        require 'phpmailer/vendor/autoload.php';
-
-        // Instantiation and passing `true` enables exceptions
-                $mail = new PHPMailer(true);
-        
-                try {
-                    //Server settings
-                    //$mail->SMTPDebug = 1; // Enable verbose debug output
-                    $mail->isSMTP(); // Set mailer to use SMTP
-                    $mail->Host       = 'smtp.gmail.com'; // Specify main and backup SMTP servers
-                    $mail->SMTPAuth   = true; // Enable SMTP authentication
-                    $mail->Username   = 'samuelgnanamhrm@gmail.com'; // SMTP username
-                    $mail->Password   = 'SGIC123456'; // SMTP password
-                    $mail->SMTPSecure = 'tls'; // Enable TLS encryption, `ssl` also accepted
-                    $mail->Port       = 587; // TCP port to connect to
-        
-                    //Recipients
-                    $mail->setFrom('samuelgnanamhrm@gmail.com', 'TIME TRACKER LOGIN INFORMATION');
-                    $mail->addAddress($_POST["user_email"], 'Sgic Time Tracker .com');
-                    $Body = ' Dear ' . $_POST["user_name"] . ',</br>
-                                <p> This is to inform you that SGIC TIME TRACKER SYSTEM login credentials information details  </p> </br>
-                                Your Login Email ID : "' . $_POST["user_email"] . '"</br>
-                                Your Login Password : "' . $userpass . '" </br>';
-        
-                    $Body .= '<p>Here is your web site login link : </br>';
-                    $Body .= '<a href ="' . $url . '">' . $url . '</a></P></br>';
-                    $Body .= '<p> After Login please change your password ... </P>';
-                    // Content
-                    $mail->isHTML(true); // Set email format to HTML
-                    $mail->Subject = 'SGIC TIME TRACKER SYSTEM login credentials information details';
-                    $mail->Body    = $Body;
-                    $mail->AltBody = strip_tags($Body);
-        
-                    $mail->send();
-                    //header("location:user.php?newuser_added=success");
-                   echo 'Email message has been sent ';
-                } catch (Exception $e) {
-                    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-                } //finshed email function
-                $msg ="and";
-                            echo $msg.' New User Added ';
+         
+                        if(sendMailNotification($_POST["user_name"],$_POST["user_email"],$userpassrnd,$urlglobal)){
+                         
+                                writeJsonMsg('Email send and New User Added','success');
+                                
+                        }else{
+                              
+                               writeJsonMsg('Mail not send  but New User Added','err');
+                            }
+                            
                         }
                     } elseif ($statement->rowCount() == 0) {
-                        echo 'May be the User Name  OR  Email already exist ';
+                        writeJsonMsg('May be the User Name  OR  Email already exist ','err');
                     }
                 }
             }
 
         } catch (PDOException $e) {
-            echo 'error occured please check ' . $e->getMessage();
+            writeJsonMsg('error occured please check '. $e->getMessage(),'err');
         }
+    } 
+    
+    else {
+        writeJsonMsg('User Email Address Already exist','err');
+       }
+    } else {
+        writeJsonMsg('User Name Already exist','err');
+       }
     }
 
     if ($_POST['btn_action'] == 'fetch_single') {
@@ -139,11 +119,12 @@ if (isset($_POST['btn_action'])) {
                 )
             )) {
                 if ($statement->rowCount() > 0) {
-                    echo 'User Details Edited';
+                    writeJsonMsg('User Details Edited','success');
                 } elseif ($statement->rowCount() == 0) {
-                    echo 'No changes had done on User Details';
+                    writeJsonMsg('No changes had done on User Details','err');
                 } else {
-                    echo 'Error occured';
+                    
+                    writeJsonMsg('Error occured','err');
                 }
             }
         } catch (PDOException $e) {
@@ -156,7 +137,17 @@ if (isset($_POST['btn_action'])) {
         if ($_POST['status'] == 'Active') {
             $status = 'Inactive';
         }
+
+      
         try {
+
+            $sql="SELECT user_role.role_status as usercount FROM user JOIN user_role ON user.user_type =user_role.role_id WHERE user.user_id =:user_id";
+			
+			$result = getResultwihParam($connect,$sql,array(
+                		':user_id'     => $_POST["user_id"]
+            ));
+		
+            if($result["usercount"]=='Active'){
             $query = "
 		UPDATE user
 		SET user_status = :user_status
@@ -171,8 +162,58 @@ if (isset($_POST['btn_action'])) {
             )) {
                 echo 'User Status change to ' . $status;
             }
+        }else{
+            echo "User Cannot be changed because the User role is Deactivated";
+        }
         } catch (PDOException $e) {
             echo 'Error occured : ' . $e->getMessage();
         }
     }
 }
+
+
+function sendMailNotification($username,$useremail,$userpass,$url){
+        //email function start
+        // Load Composer's autoloader
+        require 'phpmailer/vendor/autoload.php';
+
+        // Instantiation and passing `true` enables exceptions
+                $mail = new PHPMailer(true);
+        
+                try {
+                    //Server settings
+                    //$mail->SMTPDebug = 1; // Enable verbose debug output
+                    $mail->isSMTP(); // Set mailer to use SMTP
+                    $mail->Host       = 'smtp.gmail.com'; // Specify main and backup SMTP servers
+                    $mail->SMTPAuth   = true; // Enable SMTP authentication
+                    $mail->Username   = 'samuelgnanamhrm@gmail.com'; // SMTP username
+                    $mail->Password   = 'SGIC123456'; // SMTP password
+                    $mail->SMTPSecure = 'tls'; // Enable TLS encryption, `ssl` also accepted
+                    $mail->Port       = 587; // TCP port to connect to
+        
+                    //Recipients
+                    $mail->setFrom('samuelgnanamhrm@gmail.com', 'TIME TRACKER LOGIN INFORMATION');
+                    $mail->addAddress($useremail, 'Sgic Time Tracker .com');
+                    $Body = ' Dear ' . $username . ',</br>
+                                <p> This is to inform you that SGIC TIME TRACKER SYSTEM login credentials information details  </p> </br>
+                                Your Login Email ID : "' . $useremail . '"</br>
+                                Your Login Password : "' . $userpass . '" </br>';
+        
+                    $Body .= '<p>Here is your web site login link : </br>';
+                    $Body .= '<a href ="' . $url . '">' . $url . '</a></P></br>';
+                    $Body .= '<p> After Login please change your password ... </P>';
+                    // Content
+                    $mail->isHTML(true); // Set email format to HTML
+                    $mail->Subject = 'SGIC TIME TRACKER SYSTEM login credentials information details';
+                    $mail->Body    = $Body;
+                    $mail->AltBody = strip_tags($Body);
+        
+                    $mail->send();
+                    //header("location:user.php?newuser_added=success");
+                   return true;
+                } catch (Exception $e) {
+                    //echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+                    return false;
+                } //finshed email function
+}
+

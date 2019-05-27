@@ -64,6 +64,7 @@ include('function.php');
 					<h4 class="modal-title"><i class="fa fa-plus"></i> Add User</h4>
 				</div>
 				<div class="modal-body">
+				<span id="alert_msg_modal"></span>
 					<div class="form-group">
 						<label>Enter User Name</label>
 						<input type="text" name="user_name" id="user_name" class="form-control" required />
@@ -99,7 +100,30 @@ include('function.php');
 <script>
 	//assign company  data table
 	$(document).ready(function () {
-
+		$.validator.setDefaults({
+		errorClass:'help-block',
+		focusCleanup: true,
+		highlight:function(element){
+		$(element)
+		.parent()
+		.closest('.form-group')
+		//.removeClass('has-success')
+		.addClass('has-error');
+		// $(element.form).find("label[for=" + element.id + "]")
+		// 	.addClass('has-error');
+		},
+		unhighlight:function(element){
+			$(element)
+			.parent()
+			.closest('.form-group')
+			.removeClass('has-error');
+			//.addClass('has-success');
+			// $(element.form).find("label[for=" + element.id + "]")
+			// .removeClass('has-error');
+			//window.location reload();
+			//validatorCompany.resetForm();
+		}
+	});
 		// getting user id
 		var userid = null;
 
@@ -109,6 +133,7 @@ include('function.php');
 			$('.modal-title').html("<i class='fa fa-plus'></i> Add User");
 			$('#action').val("Add");
 			$('#btn_action').val("Add");
+			validatoruser.resetForm();
 		});
 
 		var userdataTable = $('#user_data').DataTable({
@@ -155,29 +180,63 @@ $.validator.addMethod(
 
 
 
-		$('#user_form').validate({
+		var validatoruser = $('#user_form').validate({
 			 
 		rules:{
 			user_name:{
 				required:true,
 				noSpace:true,
-				regex: "^[a-zA-Z'.\\s]{1,40}$" 
+				regex: "^[a-zA-Z'.\\s]{1,40}$",
+				remote: {
+					url: "validate.php",
+					type: "post",
+					data: {
+						param:'user_name',
+						action:function(){
+							return $('#btn_action').val();
+						},
+						actionvalue:function(){
+							return $('#user_id').val();
+						},
+						value: function(){
+							return $('#user_name').val();
+						}
+					}
+				} 
 			},
 			user_email:{
 				required:true,
-				email:true
+				email:true,
+				remote: {
+					url: "validate.php",
+					type: "post",
+					data: {
+						param:'user_email',
+						action:function(){
+							return $('#btn_action').val();
+						},
+						actionvalue:function(){
+							return $('#user_id').val();
+						},
+						value: function(){
+							return $('#user_email').val();
+						}
+					}
+				} 
 			}
 		},
 		messages:{
 			user_name:{
 				required:"please Enter User name",
 				noSpace:"Spaces Not Allowed",
-				regex:"Only character allowed"
+				regex:"Only character allowed",
+				remote:"Already exist"
 			},
 			user_email:{
 				required:"please Enter Email",
 				noSpace:"Spaces Not Allowed",
-				email:"please provide valid email"
+				email:"please provide valid email",
+				remote:"Already exist"
 			}
 		}
 		});
@@ -185,28 +244,39 @@ $.validator.addMethod(
 
 		$(document).on('submit', '#user_form', function (event) {
 			event.preventDefault();
-
 			$('#action').attr('disabled', 'disabled');
 			var form_data = $(this).serialize();
-			//console.log(form_data);
+			console.log(form_data);
 			$.ajax({
 				url: "user_action.php",
 				method: "POST",
 				data: form_data,
+				dataType:"json",
 				success: function (data) {
+					console.log(data);
+					if(data.type == 'success'){
 					$('#user_form')[0].reset();
 					$('#userModal').modal('hide');
-					$('#alert_action').fadeIn().html('<div class="alert alert-success">' + data + '</div>');
+					$('#alert_action').fadeIn().html('<div class="alert alert-success">' + data.msg + '</div>');
 					$('#action').attr('disabled', false);
 					userdataTable.ajax.reload();
 					setTimeout(() => {
 						$('#alert_action').html('');
 					}, 1500);
+					}else if(data.type == 'err'){
+						$('#alert_msg_modal').fadeIn().html('<div class="alert alert-danger">'+data.msg+'</div>');
+						$('#action').attr('disabled', false);
+						setTimeout(() => {
+							$('#alert_msg_modal').html('');
+						}, 1500);
+
+					}
 				}
 			})
 		});
 
 		$(document).on('click', '.update', function () {
+			validatoruser.resetForm();
 			var user_id = $(this).attr("id");
 			var btn_action = 'fetch_single';
 			$.ajax({
