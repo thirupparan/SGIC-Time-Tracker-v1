@@ -46,12 +46,10 @@ if (isset($_POST['btn_action'])) {
                         if ($statement->execute(
                             array(
                                 ':user_id' => $connect->lastInsertId(),
-
                             )
+                            
                         )) {
-         
                         if(sendMailNotification($_POST["user_name"],$_POST["user_email"],$userpassrnd,$urlglobal)){
-                         
                                 writeJsonMsg('Email send and New User Added','success');
                                 
                         }else{
@@ -99,12 +97,13 @@ if (isset($_POST['btn_action'])) {
     }
 
     if ($_POST['btn_action'] == 'Edit') {
+        $userpassrnd=randomPassword();
         try {
-           
                 $query = "
 			UPDATE user SET
 			user_name =TRIM(:user_name),
-			user_email =TRIM(:user_email),
+            user_email =TRIM(:user_email),
+            user_password ='". password_hash($userpassrnd, PASSWORD_DEFAULT) ."',
 			user_type =:user_type
 			WHERE user_id =:user_id
 			";
@@ -120,6 +119,15 @@ if (isset($_POST['btn_action'])) {
             )) {
                 if ($statement->rowCount() > 0) {
                     writeJsonMsg('User Details Edited','success');
+                    (sendMailNotification($_POST["user_name"],$_POST["user_email"],$userpassrnd,$urlglobal));
+                        writeJsonMsg('Email send and New User Added','success');
+                        
+                
+                      
+                       writeJsonMsg('Mail not send  but New User Added','err');
+                    
+                    writeJsonMsg('User Details Edited','success');
+                    
                 } elseif ($statement->rowCount() == 0) {
                     writeJsonMsg('No changes had done on User Details','err');
                 } else {
@@ -208,9 +216,11 @@ function sendMailNotification($username,$useremail,$userpass,$url){
                     $mail->Body    = $Body;
                     $mail->AltBody = strip_tags($Body);
         
-                    $mail->send();
+                   if( $mail->send()){
+                    return true;
+                   }
                     //header("location:user.php?newuser_added=success");
-                   return true;
+                   
                 } catch (Exception $e) {
                     //echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
                     return false;

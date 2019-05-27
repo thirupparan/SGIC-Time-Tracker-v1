@@ -257,7 +257,7 @@ $.validator.addMethod(
 					if(data.type == 'success'){
 					$('#user_form')[0].reset();
 					$('#userModal').modal('hide');
-					$('#alert_action').fadeIn().html('<div class="alert alert-success">' + data.msg + '</div>');
+					$('#alert_action').fadeIn().html('<div class="alert alert-success">' + data.msg+ '</div>');
 					$('#action').attr('disabled', false);
 					userdataTable.ajax.reload();
 					setTimeout(() => {
