@@ -28,7 +28,7 @@ if (isset($_POST['btn_action'])) {
             if ($statement->execute(
                 array(
                     ':user_email'    => $_POST["user_email"],
-                    ':user_password' => password_hash($userpass, PASSWORD_DEFAULT),
+                    ':user_password' => password_hash($userpassrnd, PASSWORD_DEFAULT),
                     ':user_name'     => $_POST["user_name"],
                     ':user_type'     => $_POST["user_type"],
                     ':user_status'   => 'Active',
@@ -117,23 +117,23 @@ if (isset($_POST['btn_action'])) {
                     ':user_id'    => $_POST["user_id"],
                 )
             )) {
-                if ($statement->rowCount() > 0) {
-                    writeJsonMsg('User Details Edited','success');
-                    (sendMailNotification($_POST["user_name"],$_POST["user_email"],$userpassrnd,$urlglobal));
-                        writeJsonMsg('Email send and New User Added','success');
-                        
-                
-                      
-                       writeJsonMsg('Mail not send  but New User Added','err');
-                    
+                if(sendMailNotification($_POST["user_name"],$_POST["user_email"],$userpassrnd,$urlglobal)){
                     writeJsonMsg('User Details Edited','success');
                     
-                } elseif ($statement->rowCount() == 0) {
-                    writeJsonMsg('No changes had done on User Details','err');
-                } else {
-                    
-                    writeJsonMsg('Error occured','err');
+            }else{
+                  
+                   writeJsonMsg('Mail not send  but New User Added','err');
                 }
+                
+                // if ($statement->rowCount()>0) {
+                //     writeJsonMsg('User Details Edited','success');
+                    
+                // } 
+            }elseif ($statement->rowCount() == 0) {
+                writeJsonMsg('No changes had done on User Details','err');
+            } else {
+                
+                writeJsonMsg('Error occured','err');
             }
         } catch (PDOException $e) {
             echo 'Error occured : ' . $e->getMessage();
