@@ -5,7 +5,15 @@ include('database_config_dashboard.php');
 include('includes/query_execute.inc.php');
 include('function.php');
 
+$useractiveSql="SELECT `user_status` FROM `user` WHERE `user_id`={$_GET["userid"]}";
+$res=getResult($connect,$useractiveSql);
 
+$statusActive='Active';
+if($res['user_status']!='Active'){
+	$statusActive='Inactive';
+	
+	
+}
 ?>
 <div id="companyModal" class="modal fade">
 	<div class="modal-dialog">
@@ -28,7 +36,14 @@ include('function.php');
 
 					<div class="form-group">
 						<label>Work Role</label>
-						<input type="text" name="work_role" id="work_role" class="form-control" required />
+						<select name="work_role" id="work_role" class="form-control" required />
+							<option>Associate Software Engineer</option>
+							<option>Associate Q-A Engineer</option>
+							<option> Software Engineer</option>
+							<option> Q-A Engineer</option>
+							<option> Tech Lead</option>
+							<option> Architect</option>
+						<select>
 					</div>
 
 					<div class="form-group">
@@ -37,8 +52,8 @@ include('function.php');
 					</div>
 
 					<div class="form-group">
-						<label>Contract Period</label>
-						<input type="text" name="Contract_Period" id="Contract_Period" class="form-control" required />
+						<label>Contract Period (In months)</label>
+						<input type="number" name="Contract_Period" id="Contract_Period" class="form-control" required min="0"/>
 					</div>
 
 
@@ -66,116 +81,48 @@ include('function.php');
 	</div>
 </div>
 
+<?php
+
+if($statusActive!='Active'){
+	echo "<div class='alert alert-danger' role='alert'>The Account is in Deactive , So you can only view the Details </div>";
+}
+?>
+
 <div class="row">
 	<div class="col-lg-12">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<div class="row">
-					<div class="col-lg-10 col-md-10 col-sm-8 col-xs-6">
+					<div class="col-lg-6 col-md-6 col-sm-8 col-xs-6">
 						<h3 class="panel-title">Company Assignment</h3>
 					</div>
-					<div class="col-lg-2 col-md-2 col-sm-4 col-xs-6" align="right">
-						<button type="button" name="add" id="add_button" class="btn btn-primary btn-xs">Add</button>
+					<div class="col-lg-6 col-md-6 col-sm-4 col-xs-6 pull-right">
+					<?php
+					if($statusActive=='Active'){
+					$workStatusQuery="SELECT count(`working_status`) as workcount FROM `user_company` WHERE `user_id`='{$_GET["userid"]}'";
+
+					$res=getResult($connect,$workStatusQuery);
+				
+					if($res['workcount']>0){
+						echo "<span class='alert-danger '>Can not Assign Company Since the User is Alredy Working</span>";
+						echo "<button type='button' name='add' id='add_button' class='btn btn-primary btn-xs pull-right' disabled>Add</button>";
+					}else{
+						echo "<button type='button' name='add' id='add_button' class='btn btn-primary btn-xs pull-right'>Add</button>";
+					}
+				}else{
+					
+					echo "<button type='button' name='add' id='add_button' class='btn btn-primary btn-xs pull-right' disabled>Add</button>";
+				}
+					?>
+						
 					</div>
 				</div>
 
 				<div class="clear:both"></div>
 			</div>
 			<div class="panel-body">
-
-				<?php
-	
- 
-   
-			$query = "CALL selectUser(".$_GET['userid'].")";  
-			$result = getAll($connect,$query);  
-			
-			foreach($result  as $row){
-				?>
-
-				<div class="col-md-12 ">
-					<div class="panel panel-success">
-						<div class="panel-heading">
-							Recruited Details
-
-						</div>
-						<div class="panel-body">
-
-							<div class="col-md-4">
-								<div class="thumbnail">
-									<table class="table">
-										<tr>
-											<th align="right">Recruited at</th>
-											<th><?php echo $row['company_name'];?></th>
-										</tr>
-										<tr>
-											<th align="right">Recruited as :</th>
-											<th><?php echo $row['work_role'];?></th>
-										</tr>
-
-										<tr>
-											<th align="right">Work Title :</th>
-											<th>Software Engineer</th>
-										</tr>
-
-									</table>
-								</div>
-
-								<div class="thumbnail">
-									<table class="table">
-
-										<tr>
-											<th align="right">Recruited on</th>
-											<th><?php echo $row['recruited_date'];?></th>
-										</tr>
-										<tr>
-											<th align="right">Contract Period</th>
-											<th><?php echo $row['contract_period'];?></th>
-										</tr>
-										<tr>
-											<th align="right">Left On</th>
-
-
-
-
-
-											<?php 
-						if( $row['working_status']=='Working') {
-							echo '<th><button>Notify Leave</button></th>';
-						}else{
-							echo '<td>dd-mm-yyyy</td>';
-						}
-						
-						?>
-										</tr>
-									</table>
-								</div>
-							</div>
-
-							<div class="col-md-8">
-								<table class="table table-bordered">
-									<tr>
-										<th>Project Name</th>
-										<th>Start Date</th>
-										<th>Progress</th>
-									</tr>
-								</table>
-							</div>
-
-
-
-
-
-						</div>
-					</div>
-				</div>
-				<?php 
-				 }
-				 	
-				 
-				?>
-
-
+				<div id="alert_company_action"></div>
+				<div id="result"></div>
 			</div>
 		</div>
 
@@ -187,9 +134,26 @@ include('function.php');
 
 <?php include('./fragments/script.html')?>
 
+
+
 <script>
 
+function fetchCompany(userid) {
+			var btn_action = 'fetch_single';
+			var action = "select";
+			$.ajax({
+				url: "recruitment_select.php?status=<?php echo $statusActive;?>",
+				method: "POST",
+				data: { action: action, user_id: userid },
+				success: function (data) {
+					$('#result').html(data);
+				}
+			});
+		}
+ 
 	$(document).ready(function () {
+
+		fetchCompany("<?php echo $_GET['userid'];?>") 
 
 		$(document).on('submit', '#company_form', function (event) {
 			event.preventDefault();
@@ -197,18 +161,23 @@ include('function.php');
 			var form_data = $(this).serialize();
 			console.log(form_data);
 			$.ajax({
-				url: "company_assign_action.php",
+				url: "recruitment_action.php",
 				method: "POST",
 				data: form_data + "&action_company=Add",
 				success: function (data) {
-					// $('#alert_company_action').html(data);
-					// fetchCompany(userid);
-					// setTimeout(() => {
-					// 	$('#alert_company_action').html('');
-					// }, 1500);
-					// $('#btn_action_company').attr('disabled', false);
-					window.location.reload();
-					//console.log(data);
+					$('#company_form')[0].reset();
+					$('#companyModal').modal('hide');
+					$('#alert_company_action').html(data);
+					$('#btn_action_company').attr('disabled', false);
+					fetchCompany("<?php echo $_GET['userid'];?>") ;
+						$('#alert_company_action').html(data);
+						setTimeout(() => {
+						window.location.reload();
+						}, 1500);
+					
+					
+					
+					
 				}
 			});
 		});
@@ -219,6 +188,30 @@ include('function.php');
 
 			$('#companyModal').modal('show');
 
+		});
+
+		$(document).on('click', '.delete_company', function () {
+			var id = $(this).attr("id");
+			
+			if (confirm("Are you sure you want to remove this data?")) {
+				var action = "Delete";
+				$.ajax({
+					url: "recruitment_action.php",
+					method: "POST",
+					data: { user_company_id: id, action_company: action },
+					success: function (data) {
+						//alert-danger
+						fetchCompany("<?php echo $_GET['userid'];?>") ;
+						$('#alert_company_action').html(data);
+						setTimeout(() => {
+							window.location.reload();
+						}, 1500);
+					}
+				})
+			}
+			else {
+				return false;
+			}
 		});
 
 	});
