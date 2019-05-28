@@ -92,7 +92,7 @@ foreach($result as $row)
 						</div>
 
 						<div class="form-group">
-							<input type="hidden" name="action" value="edit_profile" />
+							<input type="hidden" name="action"  value="edit_profile" />
 							<input type="submit" name="edit_profile" id="edit_prfile" value="Edit"
 								class="btn btn-info" />
 						</div>
@@ -261,13 +261,31 @@ function checkPasswordStrength() {
 		});
 
 		
-	});
+	
 		//edit profile jquary
-	$(document).ready(function () {
+		
+	
+
+
 		$.validator.addMethod("noSpace", function(value, element) { 
   return value.indexOf(" ") < 0 && value != ""; 
 }, "No space please and don't leave it empty");
 
+
+$.validator.setDefaults({
+		errorClass:'help-block',
+		highlight:function(element){
+			$(element)
+			.closest('.form-group')
+			.addClass('has-error');
+		},
+		unhighlight:function(element){
+			$(element)
+			.closest('.form-group')
+			.removeClass('has-error');
+		}
+		});
+		
 $.validator.addMethod(
         "regex",
         function(value, element, regexp) {
@@ -286,12 +304,12 @@ $.validator.addMethod(
 			first_name:{
 				required:true,
 				noSpace:true,
-				regex: "^[a-zA-Z'.\\s]{1,40}$" 
+				regex: "^[a-zA-Z'.\\s]{1,40}$"
 			},
 			last_name:{
 				required:true,
 				noSpace:true,
-				regex: "^[a-zA-Z'.\\s]{1,40}$" 
+				regex: "^[a-zA-Z'.\\s]{1,40}$"
 			},
 			contact_number:{
 				required:true,
@@ -332,6 +350,7 @@ $.validator.addMethod(
 
 		$('#edit_profile_form').on('submit', function (event) {
 			event.preventDefault();
+			//$('#action').attr('disabled','disabled');
 			var form_data = $(this).serialize();
 			console.log(form_data);
 			$('#edit_profile').attr('disabled', 'disabled');
@@ -351,14 +370,14 @@ $.validator.addMethod(
 					$('#photo').val('');
 					$('#profile_message').html(data);
 					setTimeout(function () {
-							window.location.reload();	
+							//window.location.reload();	
 						}, 1500);
 				}
 			})
 		});
-	});
+	
 	//photo upload jquary
-	$(document).ready(function () {
+	
 		$('#edit_photo_form').submit(function (event) {
 			if($('#photo').val()==''){
 				$('#empty_file').html('<label class="text-danger">Please Choose file </label>');
