@@ -63,19 +63,19 @@ foreach($result as $row)
 						<div class="form-group">
 							<label>First Name</label>
 							<input type="text" name="first_name" id="first_name" class="form-control"
-								value="<?php echo $first_name; ?>" required />
+								value="<?php echo $first_name; ?>" required maxlength=30 />
 						</div>
 
 						<div class="form-group">
 							<label>Last Name</label>
 							<input type="text" name="last_name" id="last_name" class="form-control"
-								value="<?php echo $last_name; ?>" required />
+								value="<?php echo $last_name; ?>" required maxlength=30/>
 						</div>
 
 						<div class="form-group">
 							<label>Contact Number</label>
 							<input type="text" name="contact_number" id="contact_number" class="form-control"
-								value="<?php echo $contact_number; ?>" required />
+								value="<?php echo $contact_number; ?>" required maxlength=13/>
 						</div>
 						<div class="form-group">
 							<label>Email</label>
@@ -85,7 +85,7 @@ foreach($result as $row)
 
 						<div class="form-group">
 							<label>Address</label>
-							<textarea name="address" id="address" class="form-control" rows="3" cols="3" style="resize:none;" required>
+							<textarea name="address" id="address" class="form-control" rows="3" cols="3" style="resize:none;" required maxlength=40>
 								<?php echo $address; ?>
 							</textarea>
 
@@ -211,7 +211,9 @@ function checkPasswordStrength() {
 		$('#password-strength-status').css({"background-color": "#FF6600","border":"#AA4502 1px solid"});
 		$('#password-strength-status').html("Medium (should include alphabets, numbers and special characters.)");
 		$('#password_strength').val('medium');
-		}}}
+		}}
+		
+		}
 
 		
 
@@ -262,6 +264,72 @@ function checkPasswordStrength() {
 	});
 		//edit profile jquary
 	$(document).ready(function () {
+		$.validator.addMethod("noSpace", function(value, element) { 
+  return value.indexOf(" ") < 0 && value != ""; 
+}, "No space please and don't leave it empty");
+
+$.validator.addMethod(
+        "regex",
+        function(value, element, regexp) {
+            var re = new RegExp(regexp);
+            return this.optional(element) || re.test(value);
+        },
+        "Please check your input."
+);
+
+
+
+
+		var validatorprofile = $('#edit_profile_form').validate({
+			 
+		rules:{
+			first_name:{
+				required:true,
+				noSpace:true,
+				regex: "^[a-zA-Z'.\\s]{1,40}$" 
+			},
+			last_name:{
+				required:true,
+				noSpace:true,
+				regex: "^[a-zA-Z'.\\s]{1,40}$" 
+			},
+			contact_number:{
+				required:true,
+				digits:true,
+				minlength:10,
+				maxlength:10
+			},
+			address:{
+				required:true,
+				minlength:10,
+				maxlength:40
+			}
+		},
+		messages:{
+			user_name:{
+				required:"please Enter First Name",
+				noSpace:"Spaces Not Allowed",
+				regex:"Only character allowed"
+			},
+			last_name:{
+				required:"please Enter First Name",
+				noSpace:"Spaces Not Allowed",
+				regex:"Only character allowed"
+			},
+			contact_number:{
+				required:"please Enter Contact Number",
+				minlength:"phone number must be of 10 numbers",
+				maxlength:"phone number must be of 10 numbers"
+
+			},
+			address:{
+				required:"please enter Address",
+				minlength:"Address should be atleast 10 characters",
+				maxlength:"Address should not exceed 40 characters"
+			}
+		}
+		});
+
 		$('#edit_profile_form').on('submit', function (event) {
 			event.preventDefault();
 			var form_data = $(this).serialize();
@@ -331,6 +399,10 @@ function checkPasswordStrength() {
 		}
 			return false;
 		});
+
+		
+	
+
 	});
 </script>
 

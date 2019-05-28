@@ -23,12 +23,22 @@
            {  
                 if(mysqli_query($connect, $procedure))  
                 {  
+                    $sql="SELECT `user_company_id` FROM `user_company` WHERE `user_id`='{$user_id_company}' AND `recruited_date`='{$recruited_date}'";
+                    $result=mysqli_query($connect,$sql);
+                    if(mysqli_num_rows($result)>0){
+                    echo  '<div class="alert alert-danger" role="alert">Failed to Add record</div>';
+                    }else{
+
+                    
+                    
+
                      $query = "CALL insertUser('".$user_id_company."', '".$company_name."','".$recruited_date."','".$work_role."','".$Contract_Period."')";  
                      if(mysqli_query($connect, $query)){
                          echo '<div class="alert alert-success" role="alert">Data Inserted</div>';
                      }  else{
                           echo '<div class="alert alert-danger" role="alert">Failed to Add record</div>';
                      }
+                    }
                        
                 }  
            }  
@@ -51,6 +61,7 @@
            { 
                 if(mysqli_query($connect, $procedure))  
                 {  
+                    
                     $query = "CALL updateUser('".$_POST["user_company_id"]."', '".$company_name."', '".$recruited_date."', '".$work_role."', '".$Contract_Period."' )"; 
 
                      if(mysqli_query($connect, $query)){
@@ -83,5 +94,34 @@
                 }  
            }  
       }  
+
+      if($_POST["action_company"] == "TERMINATE")  {
+           require_once 'database_config_dashboard.php';
+           $dot=trim($_POST['date_of_termination']);
+           $recruitId=trim($_POST['recruitment_id']);
+
+          $dbrecruitdate=$connect->query("SELECT `recruited_date` FROM `user_company` WHERE `user_company_id`={$recruitId}");
+          $rowDate=$dbrecruitdate->fetch(PDO::FETCH_ASSOC);
+
+          if(strtotime($rowDate['recruited_date'])<strtotime($dot)){
+                  try
+                    {
+                         $connect->beginTransaction();
+                              $query1=$connect->query("INSERT INTO `termination` (`user_company_id`, `date_of_termination`) VALUES ('{$recruitId}', '{$dot}')");
+                              $query2=$connect->query("UPDATE `user_company` SET `working_status` = 'Not_working' WHERE `user_company`.`user_company_id` = {$recruitId} ");
+                         $connect->commit();
+                         echo '<div class="alert alert-success" role="alert">Successfully Terminated</div>';
+                    }
+                    catch(Exception $e)
+                    { 
+                         $connect->rollBack();
+                         echo '<div class="alert alert-danger" role="alert">Failed to Terminate</div>';
+                    }
+          }else{
+               echo "failed";
+          }
+
+        
+      }
  }  
  ?>  

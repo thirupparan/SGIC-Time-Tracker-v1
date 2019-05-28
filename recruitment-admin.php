@@ -99,7 +99,7 @@ if($statusActive!='Active'){
 					<div class="col-lg-6 col-md-6 col-sm-4 col-xs-6 pull-right">
 					<?php
 					if($statusActive=='Active'){
-					$workStatusQuery="SELECT count(`working_status`) as workcount FROM `user_company` WHERE `user_id`='{$_GET["userid"]}'";
+					$workStatusQuery="SELECT count(`working_status`) as workcount FROM `user_company` WHERE `user_id`='{$_GET["userid"]}' AND `working_status`='Working'";
 
 					$res=getResult($connect,$workStatusQuery);
 				
@@ -130,6 +130,33 @@ if($statusActive!='Active'){
 </div>
 
 
+
+<!-- Modal -->
+<div class="modal fade" id="terminationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+  <form id="company_termination">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Termination</h4>
+      </div>
+      <div class="modal-body">
+	 
+		<div class="form-group">
+						<label for="termination_date">Date of termination</label>
+						<input type="date" name="date_of_termination" id="date_of_termination" class="form-control" required />
+					</div>
+					<input type="hidden" name="recruitment_id" id="recruitment_id"/>
+       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-danger" >Terminate</button>
+	  </div>
+	  </form>
+    </div>
+  </div>
+</div>
 
 
 <?php include('./fragments/script.html')?>
@@ -183,11 +210,43 @@ function fetchCompany(userid) {
 		});
 
 
+		$(document).on('submit', '#company_termination', function (event) {
+			event.preventDefault();
+			//$('#btn_action_company').attr('disabled', 'disabled');
+			var form_data = $(this).serialize();
+			console.log(form_data);
+			$.ajax({
+				url: "recruitment_action.php",
+				method: "POST",
+				data: form_data + "&action_company=TERMINATE",
+				success: function (data) {
+					$('#company_form')[0].reset();
+					$('#companyModal').modal('hide');
+					$('#alert_company_action').html(data);
+					$('#btn_action_company').attr('disabled', false);
+					fetchCompany("<?php echo $_GET['userid'];?>") ;
+						$('#alert_company_action').html(data);
+						setTimeout(() => {
+						window.location.reload();
+						}, 1500);
+					
+					
+					
+					
+				}
+			});
+		});
 
 		$('#add_button').on('click', function () {
-
 			$('#companyModal').modal('show');
 
+		});
+
+		$(document).on('click', '.terminate', function () {
+			var id = $(this).attr("id");
+			$('#recruitment_id').val(id);
+			$('#terminationModal').modal('show');
+			
 		});
 
 		$(document).on('click', '.delete_company', function () {

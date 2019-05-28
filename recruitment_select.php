@@ -17,10 +17,13 @@
       $procedure = "  
       CREATE PROCEDURE selectUser(IN u_id int(11))  
       BEGIN  
-      SELECT  oc.company_name,uc.recruited_date,uc.working_status,uc.user_company_id,uc.work_role,uc.contract_period
-      FROM USER_COMPANY uc JOIN out_source_company oc 
-      ON uc.company_id = oc.company_id 
-      WHERE user_id=u_id ORDER BY user_company_id DESC; 
+      SELECT 
+		oc.company_name,uc.recruited_date,uc.working_status,uc.user_company_id,uc.work_role,uc.contract_period,ter.date_of_termination
+		FROM USER_COMPANY uc JOIN out_source_company oc 
+		ON uc.company_id = oc.company_id
+		LEFT JOIN termination ter
+		ON ter.user_company_id=uc.user_company_id
+		WHERE user_id=u_id ORDER BY user_company_id DESC; 
       END;  
       ";  
       if(mysqli_query($connect, "DROP PROCEDURE IF EXISTS selectUser"))  
@@ -86,7 +89,7 @@
 						</tr>
 						<tr>
 							<th align="right">Contract Period</th>
-							<th><?php echo $row['contract_period'];?></th>
+							<th><?php echo $row['contract_period'];?> (months)</th>
 						</tr>
 						<tr>
 							<th align="right">Working Staus</th>
@@ -97,11 +100,11 @@
 
 							<?php 
 						if( $row['working_status']=='Working') {
-                                   echo '<th>
-                                   <span style="color:green">Working</span>
-                                   <button class="btn btn-xs btn-danger pull-right">Terminate</button></th>';
+                                   echo "<th>
+                                   <span style='color:green'>Working</span>
+                                   <button class='btn btn-xs btn-danger pull-right terminate' id='{$row['user_company_id']}'>Terminate</button></th>";
 						}else{
-							echo '<td>dd-mm-yyyy</td>';
+							echo "<td>Left on : {$row['date_of_termination']}</td>";
 						}
 						
 						?>
